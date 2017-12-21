@@ -32,6 +32,7 @@ public class HeightActivity extends BaseActivity {
     private Messenger serialPortReceiver;
     ServiceConnection conn;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
