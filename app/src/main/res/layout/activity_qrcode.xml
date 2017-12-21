@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.rotai.dtjclient.activity.QRCodeActivity">
+
+    <LinearLayout
+        android:id="@+id/activity_title"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:background="@mipmap/logo_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:textColor="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:gravity="center"
+            android:text="体 测 仪"
+            android:textSize="100sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_container"
+        android:layout_width="match_parent"
+        android:layout_height="607dp"
+        android:background="#111">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_qrcode_ll"
+        android:layout_width="match_parent"
+        android:layout_height="973dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@mipmap/content_bg"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/activity_qrcode"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:src="@mipmap/qrcode"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:gravity="center"
+            android:text="@string/scanQrcode"
+            android:textSize="50sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
