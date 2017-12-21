@@ -3,14 +3,16 @@ package com.rotai.dtjclient.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
@@ -32,11 +34,23 @@ public class HeightActivity extends BaseActivity {
     private Messenger serialPortReceiver;
     ServiceConnection conn;
 
+    /**
+     * data
+     */
+    AssetFileDescriptor file;
+    MediaPlayer mediaPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_height);
+
+        file = this.getResources().openRawResourceFd(R.raw.height);
+
+        mediaPlayer = buildMediaPlayer(this, file);
+
+        mediaPlayer.start();
 
         Intent spService = new Intent("com.rotai.app.DTJService");
         spService.setPackage("com.rotai.app.dtjservice");
@@ -65,7 +79,7 @@ public class HeightActivity extends BaseActivity {
         bindService(spService, conn, BIND_AUTO_CREATE);
 
         final Handler queue = new Handler(Looper.myLooper());
-        queue.postDelayed(new Runnable() {
+        queue.post(new Runnable() {
             @Override
             public void run() {
                 if (!isSerialPortBound.get()) {
@@ -85,9 +99,10 @@ public class HeightActivity extends BaseActivity {
                 //                queue.postDelayed(this, 1000);
 
             }
-        },5000);
+        });
 
     }
+
 
     private static class SerialPortReceiverHandler extends Handler {
         HeightActivity ctx;
@@ -103,16 +118,24 @@ public class HeightActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            float height = (float) data.getDouble("height");
-            Log.e(TAG, "data=="+data+",,,heigth"+height );
-            if(height>100.0f){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ctx.startActivity(new Intent(ctx, WeightActivity.class));
+            final float height = (float) data.getDouble("height");
+            Log.e(TAG, "data==" + data + ",,,heigth" + height);
+
+            ctx.mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if (height > 100.0f) {
+                        ctx.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ctx.startActivity(new Intent(ctx, WeightActivity.class));
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
+
+
         }
     }
 
