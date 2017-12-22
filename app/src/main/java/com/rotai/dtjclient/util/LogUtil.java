@@ -6,7 +6,7 @@ import android.os.RemoteException;
 
 import com.rotai.dtjclient.base.Application;
 
-public class Log {
+public class LogUtil {
     public static int d(String tag, String msg) {
         send(msg);
 

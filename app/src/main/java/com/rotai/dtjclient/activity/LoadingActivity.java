@@ -2,18 +2,16 @@ package com.rotai.dtjclient.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.base.Constant;
-import com.rotai.dtjclient.util.Log;
+import com.rotai.dtjclient.util.LogUtil;
 import com.rotai.dtjclient.util.SDCardUtil;
 
 import java.io.File;
@@ -30,7 +28,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.rotai.dtjclient.base.Constant.SDCARD_PATH;
-import static com.rotai.dtjclient.base.Constant.apkName_service;
 import static com.rotai.dtjclient.base.Constant.fileName_rotai;
 
 /**
@@ -72,8 +69,6 @@ public class LoadingActivity extends BaseActivity {
 
         if ((videoPaths == null) || (!videoPaths.contains(SDCARD_PATH + fileName_rotai))) {
             queue.post(new downloadAD());
-        } else if ((apkPaths == null) || (!apkPaths.contains(SDCARD_PATH + apkName_service))) {
-            queue.post(new downloadAPK());
         } else {
             startActivity(new Intent(LoadingActivity.this, SplashActivity.class));
         }
@@ -98,7 +93,7 @@ public class LoadingActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.e(TAG, "onFailure2: ");
+                    LogUtil.e(TAG, "onFailure2: ");
                 }
 
                 @Override
@@ -115,12 +110,12 @@ public class LoadingActivity extends BaseActivity {
                     while ((len = is.read(buf)) != -1) {
                         fos.write(buf, 0, len);
                         sum += len;
-                        Log.e(TAG, "onResponse: " + sum + "/" + total);
+                        LogUtil.e(TAG, "onResponse: " + sum + "/" + total);
                     }
                     fos.flush();
                     fos.close();
                     is.close();
-                    Log.e(TAG, "onResponse: 下载成功");
+                    LogUtil.e(TAG, "onResponse: 下载成功");
 
                     Message message = new Message();
                     message.what=1;
@@ -130,51 +125,5 @@ public class LoadingActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 下载服务apk
-     */
-    class downloadAPK implements Runnable {
-        @Override
-        public void run() {
-            //构建请求
-            Request request = new Request.Builder()
-                    .get()
-                    .url(Constant.apkUrl)
-                    .build();
-            Call call = okHttpClient.newCall(request);
 
-            //call加入请求队列
-            call.enqueue(new Callback() {
-
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.e(TAG, "onFailure2: ");
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-                    final InputStream is = response.body().byteStream();
-
-                    long total = response.body().contentLength();
-                    int sum = 0;
-                    int len;
-                    byte[] buf = new byte[1024];
-                    File file = new File(SDCARD_PATH, apkName_service);
-                    FileOutputStream fos = new FileOutputStream(file);
-                    while ((len = is.read(buf)) != -1) {
-                        fos.write(buf, 0, len);
-                        sum += len;
-                        Log.e(TAG, "onResponse: " + sum + "/" + total);
-                    }
-                    fos.flush();
-                    fos.close();
-                    is.close();
-                    Log.e(TAG, "onResponse: 下载成功");
-
-                    startActivity(new Intent(LoadingActivity.this, SplashActivity.class));
-                }
-            });
-        }
-    }
 }

@@ -16,7 +16,7 @@ import android.os.RemoteException;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
-import com.rotai.dtjclient.util.Log;
+import com.rotai.dtjclient.util.LogUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -55,14 +55,14 @@ public class HeightActivity extends BaseActivity {
         Intent spService = new Intent("com.rotai.app.DTJService");
         spService.setPackage("com.rotai.app.dtjservice");
 
-        Log.e(TAG, "com.rotai.app.DTJService");
+        LogUtil.e(TAG, "com.rotai.app.DTJService");
 
-        Log.d(TAG, "MAC ADDRESS: " + getMacAddress());
+        LogUtil.d(TAG, "MAC ADDRESS: " + getMacAddress());
 
         conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.e(TAG, "com.rotai.app.DTJService onServiceConnected");
+                LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
                 isSerialPortBound.set(true);
                 serialPortMessenger = new Messenger(service);
                 serialPortReceiver = new Messenger(new SerialPortReceiverHandler(HeightActivity.this));
@@ -70,7 +70,7 @@ public class HeightActivity extends BaseActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(TAG, "onServiceDisconnected: !!!");
+                LogUtil.d(TAG, "onServiceDisconnected: !!!");
                 isSerialPortBound.set(false);
                 serialPortMessenger = null;
 
@@ -94,7 +94,7 @@ public class HeightActivity extends BaseActivity {
                 try {
                     serialPortMessenger.send(message);
                 } catch (RemoteException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    LogUtil.e(TAG, e.getMessage(), e);
                 }
                 //                queue.postDelayed(this, 1000);
 
@@ -119,7 +119,7 @@ public class HeightActivity extends BaseActivity {
             if (data == null)
                 return;
             final float height = (float) data.getDouble("height");
-            Log.e(TAG, "data==" + data + ",,,heigth" + height);
+            LogUtil.e(TAG, "data==" + data + ",,,heigth" + height);
 
             ctx.mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
                 @Override

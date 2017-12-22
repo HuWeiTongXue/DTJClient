@@ -3,18 +3,17 @@ package com.rotai.dtjclient.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
-import com.rotai.dtjclient.util.Log;
+import com.rotai.dtjclient.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,13 +34,13 @@ public class WeightActivity extends BaseActivity {
         Intent spService = new Intent("com.rotai.app.DTJService");
         spService.setPackage("com.rotai.app.dtjservice");
 
-        Log.e(TAG, "com.rotai.app.DTJService");
+        LogUtil.e(TAG, "com.rotai.app.DTJService");
 
 
         conn = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                Log.e(TAG, "com.rotai.app.DTJService onServiceConnected");
+                LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
                 isSerialPortBound.set(true);
                 serialPortMessenger = new Messenger(service);
                 serialPortReceiver = new Messenger(new SerialPortReceiverHandler(WeightActivity.this));
@@ -49,7 +48,7 @@ public class WeightActivity extends BaseActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(TAG, "onServiceDisconnected: !!!");
+                LogUtil.d(TAG, "onServiceDisconnected: !!!");
                 isSerialPortBound.set(false);
                 serialPortMessenger = null;
 
@@ -73,7 +72,7 @@ public class WeightActivity extends BaseActivity {
                 try {
                     serialPortMessenger.send(message);
                 } catch (RemoteException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    LogUtil.e(TAG, e.getMessage(), e);
                 }
                 //                queue.postDelayed(this, 1000);
 
@@ -96,8 +95,8 @@ public class WeightActivity extends BaseActivity {
             if (data == null)
                 return;
             float weight = (float) data.getDouble("weight");
-            Log.e(TAG, "data=="+data+",,,weigth"+weight );
-            if(weight>50.0f){
+            LogUtil.e(TAG, "data=="+data+",,,weigth"+weight );
+            if(weight>35.0f){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
