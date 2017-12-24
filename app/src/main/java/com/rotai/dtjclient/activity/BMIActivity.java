@@ -3,6 +3,8 @@ package com.rotai.dtjclient.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -27,10 +29,23 @@ public class BMIActivity extends BaseActivity {
     private Messenger serialPortReceiver;
     ServiceConnection conn;
 
+    /**
+     * data
+     */
+    AssetFileDescriptor file;
+    MediaPlayer mediaPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bmi);
+
+        file = this.getResources().openRawResourceFd(R.raw.bmi);
+
+        mediaPlayer = buildMediaPlayer(this, file);
+
+        mediaPlayer.start();
+
         Intent spService = new Intent("com.rotai.app.DTJService");
         spService.setPackage("com.rotai.app.dtjservice");
 
@@ -77,8 +92,14 @@ public class BMIActivity extends BaseActivity {
                 //                queue.postDelayed(this, 1000);
 
             }
-        },10000);
+        },5000);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.release();
     }
 
 
@@ -96,16 +117,22 @@ public class BMIActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            float bmi = (float) data.getDouble("bmi");
+            final float bmi = (float) data.getDouble("bmi");
             LogUtil.e(TAG, "data=="+data+",,,bmi=="+bmi );
-            if(bmi>15.0f){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ctx.startActivity(new Intent(ctx, FaceActivity.class));
+            ctx.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if(bmi>10.0f){
+                        ctx.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ctx.startActivity(new Intent(ctx, FaceActivity.class));
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
+
         }
     }
 }

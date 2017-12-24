@@ -3,6 +3,8 @@ package com.rotai.dtjclient.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,16 +28,27 @@ public class WeightActivity extends BaseActivity {
     private Messenger serialPortReceiver;
     ServiceConnection conn;
 
+    /**
+     * data
+     */
+    AssetFileDescriptor file;
+    MediaPlayer mediaPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weight);
 
+        file = this.getResources().openRawResourceFd(R.raw.weight);
+
+        mediaPlayer = buildMediaPlayer(this, file);
+
+        mediaPlayer.start();
+
         Intent spService = new Intent("com.rotai.app.DTJService");
         spService.setPackage("com.rotai.app.dtjservice");
 
         LogUtil.e(TAG, "com.rotai.app.DTJService");
-
 
         conn = new ServiceConnection() {
             @Override
@@ -80,6 +93,12 @@ public class WeightActivity extends BaseActivity {
         },5000);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.release();
+    }
+
     private static class SerialPortReceiverHandler extends Handler {
         WeightActivity ctx;
 
@@ -94,16 +113,22 @@ public class WeightActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            float weight = (float) data.getDouble("weight");
+            final float weight = (float) data.getDouble("weight");
             LogUtil.e(TAG, "data=="+data+",,,weigth"+weight );
-            if(weight>35.0f){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ctx.startActivity(new Intent(ctx, BMIActivity.class));
+            ctx.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if(weight>35.0f){
+                        ctx.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ctx.startActivity(new Intent(ctx, BMIActivity.class));
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
+
         }
     }
 }

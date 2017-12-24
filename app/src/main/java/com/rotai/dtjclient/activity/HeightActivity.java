@@ -103,6 +103,11 @@ public class HeightActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer.release();
+    }
 
     private static class SerialPortReceiverHandler extends Handler {
         HeightActivity ctx;

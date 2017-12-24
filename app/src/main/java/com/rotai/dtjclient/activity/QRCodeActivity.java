@@ -12,6 +12,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -130,10 +131,21 @@ public class QRCodeActivity extends BaseActivity {
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.e(TAG, "显示二维码" );
 //                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
-
                         Bitmap bitmap = QrCodeUtil.generateBitmap(qrcode, 220, 220);
                         ctx.qrcode_iv.setImageBitmap(bitmap);
+                    }
+                });
+            }
+
+            Object subscribe = data.get("wx_subscribe");
+            if(subscribe!=null && !subscribe.equals("")){
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e(TAG, "切换视图 " );
+                        ctx.startActivity(new Intent(ctx, HeightActivity.class));
                     }
                 });
             }
