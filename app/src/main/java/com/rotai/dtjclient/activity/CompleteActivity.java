@@ -163,8 +163,6 @@ public class CompleteActivity extends BaseActivity {
             if (data == null)
                 return;
 
-
-
         }
     }
 }

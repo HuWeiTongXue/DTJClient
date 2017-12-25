@@ -37,7 +37,6 @@ public class FaceActivity extends BaseActivity {
     MediaPlayer mediaPlayer;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +83,7 @@ public class FaceActivity extends BaseActivity {
                 }
                 Message message = Message.obtain();
                 Bundle data = new Bundle();
-                data.putString("op", "cameraOpen");
+                data.putString("op", "camera_on");
                 message.setData(data);
                 message.replyTo = serialPortReceiver;
                 try {
@@ -96,37 +95,36 @@ public class FaceActivity extends BaseActivity {
             }
         });
 
+
+        queue.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(FaceActivity.this,CompleteActivity.class));
+            }
+        },15000);
     }
 
 
 
-//    private static class SerialPortReceiverHandler extends Handler {
-//        FaceActivity ctx;
-//
-//        SerialPortReceiverHandler(FaceActivity faceActivity) {
-//            ctx = faceActivity;
-//        }
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//
-//            Bundle data = msg.getData();
-//            if (data == null)
-//                return;
-//            float bmi = (float) data.getDouble("bmi");
-//            LogUtil.e(TAG, "data=="+data+",,,bmi=="+bmi );
-//            if(bmi>15.0f){
-//                ctx.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
-//                    }
-//                });
-//            }
-//        }
-//    }
+    private static class SerialPortReceiverHandler extends Handler {
+        FaceActivity ctx;
 
+        SerialPortReceiverHandler(FaceActivity faceActivity) {
+            ctx = faceActivity;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            Bundle data = msg.getData();
+            if (data == null)
+                return;
+
+            // TODO: 2017/12/25 消息分类处理
+
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -142,7 +140,7 @@ public class FaceActivity extends BaseActivity {
                 }
                 Message message = Message.obtain();
                 Bundle data = new Bundle();
-                data.putString("op", "cameraClose");
+                data.putString("op", "camera_off");
                 message.setData(data);
                 message.replyTo = serialPortReceiver;
                 try {
