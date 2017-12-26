@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
@@ -26,13 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HeightActivity extends BaseActivity {
 
-    /**
-     * 服务相关
-     */
-    private AtomicBoolean isSerialPortBound = new AtomicBoolean(false);
-    private Messenger serialPortMessenger;
-    private Messenger serialPortReceiver;
-    ServiceConnection conn;
 
     /**
      * data
@@ -40,11 +34,51 @@ public class HeightActivity extends BaseActivity {
     AssetFileDescriptor file;
     MediaPlayer mediaPlayer;
 
+    /**
+     * 服务相关
+     */
+    private AtomicBoolean isServiceBound = new AtomicBoolean(false);
+    private Messenger serviceMessenger;
+    private Messenger serviceReceiver;
+    Handler queue;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
+            isServiceBound.set(true);
+            serviceMessenger = new Messenger(service);
+            serviceReceiver = new Messenger(new ServiceReceiver(HeightActivity.this));
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            LogUtil.d(TAG, "onServiceDisconnected: !!!");
+            isServiceBound.set(false);
+            serviceMessenger = null;
+            serviceReceiver = null;
+            queue.postDelayed(connectService, 1000);
+        }
+    };
+
+    Runnable connectService = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "connectService");
+            Intent service = new Intent("com.rotai.app.DTJService");
+            service.setPackage("com.rotai.app.dtjservice");
+            bindService(service, serviceConnection, BIND_AUTO_CREATE);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_height);
+
+        queue = new Handler(Looper.myLooper());
+
+        queue.post(connectService);
 
         file = this.getResources().openRawResourceFd(R.raw.height);
 
@@ -59,49 +93,18 @@ public class HeightActivity extends BaseActivity {
 
         LogUtil.d(TAG, "MAC ADDRESS: " + getMacAddress());
 
-        conn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
-                isSerialPortBound.set(true);
-                serialPortMessenger = new Messenger(service);
-                serialPortReceiver = new Messenger(new SerialPortReceiverHandler(HeightActivity.this));
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                LogUtil.d(TAG, "onServiceDisconnected: !!!");
-                isSerialPortBound.set(false);
-                serialPortMessenger = null;
-
-            }
-        };
-        bindService(spService, conn, BIND_AUTO_CREATE);
-
-        final Handler queue = new Handler(Looper.myLooper());
         queue.post(new Runnable() {
             @Override
             public void run() {
-                if (!isSerialPortBound.get()) {
-                    queue.postDelayed(this, 1000);
-                    return;
-                }
-                Message message = Message.obtain();
                 Bundle data = new Bundle();
                 data.putString("op", "height");
-                message.setData(data);
-                message.replyTo = serialPortReceiver;
-                try {
-                    serialPortMessenger.send(message);
-                } catch (RemoteException e) {
-                    LogUtil.e(TAG, e.getMessage(), e);
-                }
-                //                queue.postDelayed(this, 1000);
-
+                queue.post(new ServiceSender(HeightActivity.this,data));
             }
         });
 
     }
+
+
 
     @Override
     protected void onPause() {
@@ -109,10 +112,10 @@ public class HeightActivity extends BaseActivity {
         mediaPlayer.release();
     }
 
-    private static class SerialPortReceiverHandler extends Handler {
+    private static class ServiceReceiver extends Handler {
         HeightActivity ctx;
 
-        SerialPortReceiverHandler(HeightActivity heightActivity) {
+        ServiceReceiver(HeightActivity heightActivity) {
             ctx = heightActivity;
         }
 
@@ -143,6 +146,34 @@ public class HeightActivity extends BaseActivity {
 
         }
     }
+
+    private static class ServiceSender implements Runnable {
+        HeightActivity ctx;
+        Bundle data;
+
+        ServiceSender(HeightActivity ctx, Bundle data) {
+            this.ctx = ctx;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            if (ctx.serviceMessenger == null) {
+                ctx.queue.post(ctx.connectService);
+                ctx.queue.postDelayed(this, 1000);
+                return;
+            }
+
+            Message message = Message.obtain();
+            message.setData(data);
+            message.replyTo = ctx.serviceReceiver;
+            try {
+                ctx.serviceMessenger.send(message);
+            } catch (RemoteException e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+    };
 
 
     private String getMacAddress() {

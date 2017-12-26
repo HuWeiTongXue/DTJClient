@@ -40,16 +40,47 @@ public class QRCodeActivity extends BaseActivity {
     /**
      * 服务相关
      */
-    private AtomicBoolean isSerialPortBound = new AtomicBoolean(false);
-    private Messenger serialPortMessenger;
-    private Messenger serialPortReceiver;
-    ServiceConnection conn;
+    private AtomicBoolean isServiceBound = new AtomicBoolean(false);
+    private Messenger serviceMessenger;
+    private Messenger serviceReceiver;
+    Handler queue;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
+            isServiceBound.set(true);
+            serviceMessenger = new Messenger(service);
+            serviceReceiver = new Messenger(new ServiceReceiver(QRCodeActivity.this));
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            LogUtil.d(TAG, "onServiceDisconnected: !!!");
+            isServiceBound.set(false);
+            serviceMessenger = null;
+            serviceReceiver = null;
+            queue.postDelayed(connectService, 1000);
+        }
+    };
+
+    Runnable connectService = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "connectService");
+            Intent service = new Intent("com.rotai.app.DTJService");
+            service.setPackage("com.rotai.app.dtjservice");
+            bindService(service, serviceConnection, BIND_AUTO_CREATE);
+        }
+    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode);
+
+        queue = new Handler(Looper.myLooper());
+        queue.post(connectService);
 
         title=findViewById(R.id.activity_title);
         container=findViewById(R.id.activity_container);
@@ -64,58 +95,23 @@ public class QRCodeActivity extends BaseActivity {
         fc.add(R.id.activity_container,videoFragment);
         fc.commit();
 
-        Intent spService = new Intent("com.rotai.app.DTJService");
-        spService.setPackage("com.rotai.app.dtjservice");
-
         LogUtil.e(TAG, "com.rotai.app.DTJService");
 
-        conn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                LogUtil.e(TAG, "com.rotai.app.DTJService onServiceConnected");
-                isSerialPortBound.set(true);
-                serialPortMessenger = new Messenger(service);
-                serialPortReceiver = new Messenger(new SerialPortReceiverHandler(QRCodeActivity.this));
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                LogUtil.d(TAG, "onServiceDisconnected: !!!");
-                isSerialPortBound.set(false);
-                serialPortMessenger = null;
-
-            }
-        };
-        bindService(spService, conn, BIND_AUTO_CREATE);
-
-        final Handler queue = new Handler(Looper.myLooper());
         queue.post(new Runnable() {
             @Override
             public void run() {
-                if (!isSerialPortBound.get()) {
-                    queue.postDelayed(this, 1000);
-                    return;
-                }
-                Message message = Message.obtain();
                 Bundle data = new Bundle();
                 data.putString("op", "qrcode");
-                message.setData(data);
-                message.replyTo = serialPortReceiver;
-                try {
-                    serialPortMessenger.send(message);
-                } catch (RemoteException e) {
-                    LogUtil.e(TAG, e.getMessage(), e);
-                }
-
+                queue.post(new ServiceSender(QRCodeActivity.this,data));
             }
         });
 
     }
 
-    private static class SerialPortReceiverHandler extends Handler {
+    private static class ServiceReceiver extends Handler {
         QRCodeActivity ctx;
 
-        SerialPortReceiverHandler(QRCodeActivity qrCodeActivity) {
+        ServiceReceiver(QRCodeActivity qrCodeActivity) {
             ctx = qrCodeActivity;
         }
 
@@ -151,4 +147,32 @@ public class QRCodeActivity extends BaseActivity {
             }
         }
     }
+
+    private static class ServiceSender implements Runnable {
+        QRCodeActivity ctx;
+        Bundle data;
+
+        ServiceSender(QRCodeActivity ctx, Bundle data) {
+            this.ctx = ctx;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            if (ctx.serviceMessenger == null) {
+                ctx.queue.post(ctx.connectService);
+                ctx.queue.postDelayed(this, 1000);
+                return;
+            }
+
+            Message message = Message.obtain();
+            message.setData(data);
+            message.replyTo = ctx.serviceReceiver;
+            try {
+                ctx.serviceMessenger.send(message);
+            } catch (RemoteException e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+        }
+    };
 }
