@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.rotai.dtjclient.util.LogUtil;
+
 import java.io.IOException;
 
 public class BaseActivity extends AppCompatActivity {
@@ -59,6 +61,17 @@ public class BaseActivity extends AppCompatActivity {
             mediaPlayer = null;
         }
         return mediaPlayer;
+    }
+
+
+    public static int isBackground(){
+        if(Application.stateCount==0){
+            LogUtil.d(TAG,"isBackground");
+            return 0;
+        }else {
+            LogUtil.d(TAG,"isForeground");
+            return 1;
+        }
     }
 
 }
