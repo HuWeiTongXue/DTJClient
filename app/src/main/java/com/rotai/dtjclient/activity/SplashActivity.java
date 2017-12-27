@@ -58,6 +58,7 @@ public class SplashActivity extends BaseActivity {
             isServiceBound.set(true);
             serviceMessenger = new Messenger(service);
             serviceReceiver = new Messenger(new ServiceReceiver(SplashActivity.this));
+            queue.post(new ServiceSender(SplashActivity.this, new Bundle()));
         }
 
         @Override

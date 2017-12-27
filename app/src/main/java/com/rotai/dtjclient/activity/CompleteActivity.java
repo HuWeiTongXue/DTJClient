@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -49,6 +50,7 @@ public class CompleteActivity extends BaseActivity {
             isServiceBound.set(true);
             serviceMessenger = new Messenger(service);
             serviceReceiver = new Messenger(new ServiceReceiver(CompleteActivity.this));
+            queue.post(new ServiceSender(CompleteActivity.this, new Bundle()));
         }
 
         @Override

@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.fragment.VideoFragment;
@@ -51,6 +52,7 @@ public class QRCodeActivity extends BaseActivity {
             isServiceBound.set(true);
             serviceMessenger = new Messenger(service);
             serviceReceiver = new Messenger(new ServiceReceiver(QRCodeActivity.this));
+            queue.post(new ServiceSender(QRCodeActivity.this, new Bundle()));
         }
 
         @Override

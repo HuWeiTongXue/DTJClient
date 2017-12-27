@@ -14,6 +14,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -42,6 +43,7 @@ public class WeightActivity extends BaseActivity {
             isServiceBound.set(true);
             serviceMessenger = new Messenger(service);
             serviceReceiver = new Messenger(new ServiceReceiver(WeightActivity.this));
+            queue.post(new ServiceSender(WeightActivity.this, new Bundle()));
         }
 
         @Override

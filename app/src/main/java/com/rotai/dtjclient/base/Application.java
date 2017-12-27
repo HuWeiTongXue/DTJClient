@@ -13,6 +13,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,6 +40,7 @@ public class Application extends android.app.Application {
             isServiceBound.set(true);
             serviceMessenger = new Messenger(service);
             serviceReceiver = new Messenger(new ServiceReceiver(Application.this));
+            queue.post(new ServiceSender(Application.this, new Bundle()));
         }
 
         @Override
