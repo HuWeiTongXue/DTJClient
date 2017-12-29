@@ -116,13 +116,24 @@ public class SplashActivity extends BaseActivity {
                 queue.post(new ServiceSender(SplashActivity.this,data));
             }
         });
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        LogUtil.d(TAG, "onPause");
         mediaPlayer.release();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(SplashActivity.this,data));
     }
 
     private static class ServiceSender implements Runnable {

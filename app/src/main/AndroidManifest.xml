@@ -32,7 +32,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity android:name=".activity.WeightActivity" />
-        <activity android:name=".activity.BMIActivity" />
+        <activity android:name=".activity.BFPActivity" />
         <activity android:name=".activity.FaceActivity" >
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -47,7 +47,14 @@
             <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.QRCodeActivity"></activity>
+        <activity android:name=".activity.QRCodeActivity">
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+
+        </activity>
         <activity android:name=".activity.ReadyActivity"></activity>
         <activity android:name=".activity.CompleteActivity">
 

@@ -19,11 +19,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
+import com.rotai.dtjclient.util.EncodingUtils;
 import com.rotai.dtjclient.util.LogUtil;
-import com.rotai.dtjclient.util.QrCodeUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -145,6 +144,17 @@ public class CompleteActivity extends BaseActivity {
         super.onPause();
         mediaPlayer.release();
         mediaPlayer2.release();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(CompleteActivity.this,data));
     }
 
     private static class ServiceReceiver extends Handler {
@@ -177,10 +187,15 @@ public class CompleteActivity extends BaseActivity {
                     @Override
                     public void run() {
                         Log.e(TAG, "显示付费二维码" );
-                        Bitmap bitmap = QrCodeUtil.generateBitmap(pay, 220, 220);
+                        Bitmap bitmap = EncodingUtils.createQRCode(pay, 220, 220, null);
                         ctx.complete_qrcode.setImageBitmap(bitmap);
                     }
                 });
+            }
+
+            Object wakeup = data.get("wakeup");
+            if (wakeup != null && !wakeup.equals("")) {
+                return;
             }
 
         }

@@ -131,6 +131,11 @@ public class FaceActivity extends BaseActivity {
 
             // TODO: 2017/12/25 消息分类处理
 
+            Object wakeup = data.get("wakeup");
+            if (wakeup != null && !wakeup.equals("")) {
+                return;
+            }
+
         }
     }
 
@@ -175,5 +180,16 @@ public class FaceActivity extends BaseActivity {
 //                queue.post(new ServiceSender(FaceActivity.this,data));
 //            }
 //        });
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(FaceActivity.this,data));
     }
 }

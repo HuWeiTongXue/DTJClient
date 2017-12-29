@@ -112,6 +112,17 @@ public class HeightActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer.release();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(HeightActivity.this,data));
     }
 
     private static class ServiceReceiver extends Handler {
@@ -145,6 +156,10 @@ public class HeightActivity extends BaseActivity {
                 }
             });
 
+            Object wakeup = data.get("wakeup");
+            if (wakeup != null && !wakeup.equals("")) {
+                return;
+            }
 
         }
     }

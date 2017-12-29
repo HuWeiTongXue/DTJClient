@@ -14,7 +14,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -98,6 +97,17 @@ public class WeightActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer.release();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(WeightActivity.this,data));
     }
 
     private static class ServiceReceiver extends Handler {
@@ -123,12 +133,18 @@ public class WeightActivity extends BaseActivity {
                         ctx.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                ctx.startActivity(new Intent(ctx, BMIActivity.class));
+                                ctx.startActivity(new Intent(ctx, BFPActivity.class));
                             }
                         });
                     }
                 }
             });
+
+
+            Object wakeup = data.get("wakeup");
+            if (wakeup != null && !wakeup.equals("")) {
+                return;
+            }
 
         }
     }

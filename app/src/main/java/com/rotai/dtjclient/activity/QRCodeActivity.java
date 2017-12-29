@@ -17,12 +17,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.fragment.VideoFragment;
+import com.rotai.dtjclient.util.EncodingUtils;
 import com.rotai.dtjclient.util.LogUtil;
-import com.rotai.dtjclient.util.QrCodeUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -129,9 +128,9 @@ public class QRCodeActivity extends BaseActivity {
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e(TAG, "显示二维码" );
+                        Log.e(TAG, "显示公众号二维码" );
 //                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
-                        Bitmap bitmap = QrCodeUtil.generateBitmap(qrcode, 220, 220);
+                        Bitmap bitmap = EncodingUtils.createQRCode(qrcode, 220, 220, null);
                         ctx.qrcode_iv.setImageBitmap(bitmap);
                     }
                 });
@@ -146,6 +145,11 @@ public class QRCodeActivity extends BaseActivity {
                         ctx.startActivity(new Intent(ctx, HeightActivity.class));
                     }
                 });
+            }
+
+            Object wakeup = data.get("wakeup");
+            if (wakeup != null && !wakeup.equals("")) {
+                return;
             }
         }
     }
@@ -177,4 +181,20 @@ public class QRCodeActivity extends BaseActivity {
             }
         }
     };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtil.d(TAG, "onDestroy");
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(QRCodeActivity.this, data));
+    }
 }
