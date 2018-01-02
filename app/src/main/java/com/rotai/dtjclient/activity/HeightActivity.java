@@ -106,12 +106,11 @@ public class HeightActivity extends BaseActivity {
 
     }
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
         mediaPlayer.release();
+        mediaPlayer=null;
         finish();
     }
 

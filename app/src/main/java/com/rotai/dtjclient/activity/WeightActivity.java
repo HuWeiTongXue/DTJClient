@@ -97,6 +97,7 @@ public class WeightActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer.release();
+        mediaPlayer=null;
         finish();
     }
 
@@ -129,7 +130,7 @@ public class WeightActivity extends BaseActivity {
             ctx.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    if(weight>35.0f){
+                    if(weight>20.0f){
                         ctx.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

@@ -14,7 +14,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -22,7 +21,6 @@ import com.rotai.dtjclient.util.LogUtil;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FaceActivity extends BaseActivity {
-
 
 
     /**
@@ -92,25 +90,25 @@ public class FaceActivity extends BaseActivity {
             public void run() {
                 Bundle data = new Bundle();
                 data.putString("op", "camera_on");
-                queue.post(new ServiceSender(FaceActivity.this,data));
+                queue.post(new ServiceSender(FaceActivity.this, data));
             }
         });
 
-        queue.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Bundle data = new Bundle();
-                data.putString("op", "camera_off");
-                queue.post(new ServiceSender(FaceActivity.this,data));
-            }
-        },15000);
+        //        queue.postDelayed(new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                Bundle data = new Bundle();
+        //                data.putString("op", "camera_off");
+        //                queue.post(new ServiceSender(FaceActivity.this,data));
+        //            }
+        //        },15000);
 
-        queue.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(FaceActivity.this,CompleteActivity.class));
-            }
-        },18000);
+        //        queue.postDelayed(new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                startActivity(new Intent(FaceActivity.this,ReportActivity.class));
+        //            }
+        //        },18000);
 
     }
 
@@ -129,13 +127,22 @@ public class FaceActivity extends BaseActivity {
             if (data == null)
                 return;
 
-            // TODO: 2017/12/25 消息分类处理
-
             Object wakeup = data.get("wakeup");
             if (wakeup != null && !wakeup.equals("")) {
                 return;
             }
 
+            final int age = data.getInt("age");
+            LogUtil.e(TAG, "data==" + data + ",,,age" + age);
+
+            if (age > 5) {
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ctx.startActivity(new Intent(ctx, ReportActivity.class));
+                    }
+                });
+            }
         }
     }
 
@@ -165,21 +172,24 @@ public class FaceActivity extends BaseActivity {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
-    };
+    }
+
+    ;
 
     @Override
     protected void onPause() {
         super.onPause();
 
         mediaPlayer.release();
-//        queue.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                Bundle data = new Bundle();
-//                data.putString("op", "camera_off");
-//                queue.post(new ServiceSender(FaceActivity.this,data));
-//            }
-//        });
+        mediaPlayer = null;
+        //        queue.post(new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                Bundle data = new Bundle();
+        //                data.putString("op", "camera_off");
+        //                queue.post(new ServiceSender(FaceActivity.this,data));
+        //            }
+        //        });
         finish();
     }
 
@@ -190,6 +200,6 @@ public class FaceActivity extends BaseActivity {
 
         Bundle data = new Bundle();
         data.putString("op", "bye");
-        queue.post(new ServiceSender(FaceActivity.this,data));
+        queue.post(new ServiceSender(FaceActivity.this, data));
     }
 }

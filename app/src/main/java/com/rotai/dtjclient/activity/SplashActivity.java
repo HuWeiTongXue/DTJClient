@@ -94,25 +94,29 @@ public class SplashActivity extends BaseActivity {
 
         startViewPager(pic_viewPager);
 
-        file = this.getResources().openRawResourceFd(R.raw.adtips);
-
-        mediaPlayer = buildMediaPlayer(this, file);
-        mediaPlayer.start();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mediaPlayer.start();
-                mediaPlayer.setLooping(true);
-            }
-        });
+//        file = this.getResources().openRawResourceFd(R.raw.adtips);
+//
+//        mediaPlayer = buildMediaPlayer(this, file);
+//        mediaPlayer.start();
+//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                mediaPlayer.start();
+//                mediaPlayer.setLooping(true);
+//            }
+//        });
 
         LogUtil.e(TAG, "com.rotai.app.DTJService");
 
         queue.post(new Runnable() {
             @Override
             public void run() {
+                int versionCode = getVersionCode(SplashActivity.this);
+                String versionName = getVerName(SplashActivity.this);
                 Bundle data = new Bundle();
                 data.putString("op", "hi");
+                data.putInt("versionCode", versionCode);
+                data.putString("versionName",versionName);
                 queue.post(new ServiceSender(SplashActivity.this,data));
             }
         });
@@ -123,6 +127,7 @@ public class SplashActivity extends BaseActivity {
         super.onPause();
         LogUtil.d(TAG, "onPause");
         mediaPlayer.release();
+        mediaPlayer=null;
         finish();
     }
 
@@ -183,7 +188,7 @@ public class SplashActivity extends BaseActivity {
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
+                        ctx.startActivity(new Intent(ctx, ReadyActivity.class));
                     }
                 });
             }
@@ -231,4 +236,6 @@ public class SplashActivity extends BaseActivity {
         pic_viewPager.setCycle(true);
         pic_viewPager.setBorderAnimation(false);
     }
+
+
 }

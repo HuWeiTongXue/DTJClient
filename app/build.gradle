@@ -14,8 +14,8 @@ android {
         applicationId "com.rotai.dtjclient"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 23
-        versionName "2.3"
+        versionCode 30
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

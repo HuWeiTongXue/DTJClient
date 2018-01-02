@@ -136,12 +136,12 @@ public class QRCodeActivity extends BaseActivity {
                 });
             }
 
-            Object subscribe = data.get("wx_subscribe");
+            Object subscribe = data.get("wx_scan");
             if(subscribe!=null && !subscribe.equals("")){
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e(TAG, "切换视图 " );
+                        Log.e(TAG, "准备自动测量！ " );
                         ctx.startActivity(new Intent(ctx, HeightActivity.class));
                     }
                 });

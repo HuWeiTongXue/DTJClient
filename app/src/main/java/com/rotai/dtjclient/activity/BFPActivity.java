@@ -99,6 +99,7 @@ public class BFPActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer.release();
+        mediaPlayer=null;
         finish();
     }
 
@@ -132,7 +133,7 @@ public class BFPActivity extends BaseActivity {
             ctx.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    if(bfp>10.0f){
+                    if(bfp>5.0f){
                         ctx.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

@@ -26,6 +26,9 @@ import com.rotai.dtjclient.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 检测完成界面，请求显示付费二维码，并接收付款回调
+ */
 public class CompleteActivity extends BaseActivity {
 
     /**
@@ -144,6 +147,8 @@ public class CompleteActivity extends BaseActivity {
         super.onPause();
         mediaPlayer.release();
         mediaPlayer2.release();
+        mediaPlayer=null;
+        mediaPlayer2=null;
         finish();
     }
 
@@ -171,12 +176,22 @@ public class CompleteActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            Object paid = data.get("paid");
+            Object paid = data.get("paid");  //支付成功
             if (paid != null && !paid.equals("")) {
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ctx.startActivity(new Intent(ctx, SplashActivity.class));
+                        ctx.startActivity(new Intent(ctx, ReportActivity.class));
+                    }
+                });
+            }
+
+            Object pay_failed = data.get("pay_failed");  //支付失败
+            if (pay_failed != null && !pay_failed.equals("")) {
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ctx.startActivity(new Intent(ctx, PayFailedActivity.class));
                     }
                 });
             }
@@ -186,7 +201,7 @@ public class CompleteActivity extends BaseActivity {
                 ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.e(TAG, "显示付费二维码" );
+                        Log.e(TAG, "请求付费二维码" );
                         Bitmap bitmap = EncodingUtils.createQRCode(pay, 220, 220, null);
                         ctx.complete_qrcode.setImageBitmap(bitmap);
                     }

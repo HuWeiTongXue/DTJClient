@@ -52,7 +52,7 @@ public class ReadyActivity extends BaseActivity {
                 mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        startActivity(new Intent(ReadyActivity.this, HeightActivity.class));
+                        startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
                     }
                 });
 
@@ -65,15 +65,15 @@ public class ReadyActivity extends BaseActivity {
                 downTimer.start();
             }
         });
+    }
 
-
-
-//        queue.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        },6000);
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mediaPlayer1.release();
+        mediaPlayer2.release();
+        mediaPlayer1=null;
+        mediaPlayer2=null;
+        finish();
     }
 }
