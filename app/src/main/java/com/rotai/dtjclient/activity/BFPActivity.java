@@ -28,6 +28,8 @@ public class BFPActivity extends BaseActivity {
      */
     AssetFileDescriptor file;
     MediaPlayer mediaPlayer;
+    boolean playing = true;
+    boolean jumping = false;
 
     /**
      * 服务相关
@@ -78,6 +80,13 @@ public class BFPActivity extends BaseActivity {
         file = this.getResources().openRawResourceFd(R.raw.bmi);
 
         mediaPlayer = buildMediaPlayer(this, file);
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                playing = false;
+            }
+        });
 
         mediaPlayer.start();
 
@@ -130,19 +139,21 @@ public class BFPActivity extends BaseActivity {
                 return;
             final float bfp = (float) data.getDouble("bfp");
             LogUtil.e(TAG, "data=="+data+",,,bfp=="+bfp );
-            ctx.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    if(bfp>5.0f){
-                        ctx.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ctx.startActivity(new Intent(ctx, FaceActivity.class));
-                            }
-                        });
+
+            if(bfp>5.0f){
+                if (ctx.jumping) return;
+                ctx.jumping = true;
+                ctx.queue.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ctx.playing) {
+                            ctx.queue.postDelayed(this, 500);
+                            return;
+                        }
+                        ctx.startActivity(new Intent(ctx,FaceActivity.class));
                     }
-                }
-            });
+                });
+            }
 
 
             Object wakeup = data.get("wakeup");

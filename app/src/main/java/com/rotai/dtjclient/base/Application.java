@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,9 +16,12 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.rotai.dtjclient.MainActivity;
+import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.util.LogUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.rotai.dtjclient.base.BaseActivity.buildMediaPlayer;
 
 public class Application extends android.app.Application {
 
@@ -25,6 +30,8 @@ public class Application extends android.app.Application {
     private static Application mApplication = null;
 
     public static int stateCount = 0;
+
+
 
     /**
      * 服务相关
@@ -165,5 +172,4 @@ public class Application extends android.app.Application {
         }
     }
 
-    ;
 }

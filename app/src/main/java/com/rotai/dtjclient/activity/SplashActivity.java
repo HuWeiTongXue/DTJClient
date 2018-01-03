@@ -94,17 +94,17 @@ public class SplashActivity extends BaseActivity {
 
         startViewPager(pic_viewPager);
 
-//        file = this.getResources().openRawResourceFd(R.raw.adtips);
-//
-//        mediaPlayer = buildMediaPlayer(this, file);
-//        mediaPlayer.start();
-//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//                mediaPlayer.start();
-//                mediaPlayer.setLooping(true);
-//            }
-//        });
+        file = this.getResources().openRawResourceFd(R.raw.adtips);
+
+        mediaPlayer = buildMediaPlayer(this, file);
+        mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.start();
+                mediaPlayer.setLooping(true);
+            }
+        });
 
         LogUtil.e(TAG, "com.rotai.app.DTJService");
 

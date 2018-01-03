@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.widget.TextView;
 
 import com.rotai.dtjclient.R;
+import com.rotai.dtjclient.base.Application;
 import com.rotai.dtjclient.base.BaseActivity;
 
 public class ReadyActivity extends BaseActivity {
@@ -32,10 +33,10 @@ public class ReadyActivity extends BaseActivity {
         time=findViewById(R.id.time);
 
         file1 = this.getResources().openRawResourceFd(R.raw.ready);
-        file2 = this.getResources().openRawResourceFd(R.raw.ready2);
-
         mediaPlayer1 = buildMediaPlayer(this, file1);
-        mediaPlayer2 = buildMediaPlayer(this, file2);
+        //        file2 = this.getResources().openRawResourceFd(R.raw.ready2);
+
+//        mediaPlayer2 = buildMediaPlayer(this, file2);
 
         mediaPlayer1.start();
 
@@ -48,13 +49,14 @@ public class ReadyActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
-                mediaPlayer2.start();
-                mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
-                    }
-                });
+                startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
+//                mediaPlayer2.start();
+//                mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                    @Override
+//                    public void onCompletion(MediaPlayer mp) {
+//                        startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
+//                    }
+//                });
 
             }
         };
@@ -71,9 +73,9 @@ public class ReadyActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer1.release();
-        mediaPlayer2.release();
+//        mediaPlayer2.release();
         mediaPlayer1=null;
-        mediaPlayer2=null;
+//        mediaPlayer2=null;
         finish();
     }
 }

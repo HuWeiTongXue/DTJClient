@@ -80,7 +80,7 @@ public class FaceActivity extends BaseActivity {
 
         mediaPlayer = buildMediaPlayer(this, file);
 
-        mediaPlayer.start();
+        //        mediaPlayer.start();
 
 
         LogUtil.e(TAG, "com.rotai.app.DTJService");
@@ -182,14 +182,14 @@ public class FaceActivity extends BaseActivity {
 
         mediaPlayer.release();
         mediaPlayer = null;
-        //        queue.post(new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                Bundle data = new Bundle();
-        //                data.putString("op", "camera_off");
-        //                queue.post(new ServiceSender(FaceActivity.this,data));
-        //            }
-        //        });
+        queue.post(new Runnable() {
+            @Override
+            public void run() {
+                Bundle data = new Bundle();
+                data.putString("op", "camera_off");
+                queue.post(new ServiceSender(FaceActivity.this, data));
+            }
+        });
         finish();
     }
 

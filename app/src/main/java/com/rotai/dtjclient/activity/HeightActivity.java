@@ -34,6 +34,8 @@ public class HeightActivity extends BaseActivity {
      */
     AssetFileDescriptor file;
     MediaPlayer mediaPlayer;
+    boolean playing = true;
+    boolean jumping = false;
 
     /**
      * 服务相关
@@ -85,6 +87,13 @@ public class HeightActivity extends BaseActivity {
         file = this.getResources().openRawResourceFd(R.raw.height);
 
         mediaPlayer = buildMediaPlayer(this, file);
+
+        mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                playing = false;
+            }
+        });
 
         mediaPlayer.start();
 
@@ -141,19 +150,20 @@ public class HeightActivity extends BaseActivity {
             final float height = (float) data.getDouble("height");
             LogUtil.e(TAG, "data==" + data + ",,,heigth" + height);
 
-            ctx.mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    if (height > 100.0f) {
-                        ctx.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ctx.startActivity(new Intent(ctx, WeightActivity.class));
-                            }
-                        });
+            if (height > 100f) {
+                if (ctx.jumping) return;
+                ctx.jumping = true;
+                ctx.queue.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (ctx.playing) {
+                            ctx.queue.postDelayed(this, 500);
+                            return;
+                        }
+                        ctx.startActivity(new Intent(ctx, WeightActivity.class));
                     }
-                }
-            });
+                });
+            }
 
             Object wakeup = data.get("wakeup");
             if (wakeup != null && !wakeup.equals("")) {
