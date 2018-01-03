@@ -125,7 +125,6 @@ public class BFPActivity extends BaseActivity {
 
     private static class ServiceReceiver extends Handler {
         BFPActivity ctx;
-
         ServiceReceiver(BFPActivity BFPActivity) {
             ctx = BFPActivity;
         }
