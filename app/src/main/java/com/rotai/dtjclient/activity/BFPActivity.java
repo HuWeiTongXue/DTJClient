@@ -123,7 +123,7 @@ public class BFPActivity extends BaseActivity {
     }
 
 
-    private static class ServiceReceiver extends Handler {
+    private class ServiceReceiver extends Handler {
         BFPActivity ctx;
         ServiceReceiver(BFPActivity BFPActivity) {
             ctx = BFPActivity;
@@ -160,6 +160,10 @@ public class BFPActivity extends BaseActivity {
                 return;
             }
 
+            Object stepdown  = data.get("stepdown ");
+            if (stepdown != null && !stepdown.equals("")) {
+                ctx.startActivity(new Intent(BFPActivity.this,SplashActivity.class));
+            }
         }
     }
 

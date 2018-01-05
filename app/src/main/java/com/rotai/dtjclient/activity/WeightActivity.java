@@ -120,7 +120,7 @@ public class WeightActivity extends BaseActivity {
         queue.post(new ServiceSender(WeightActivity.this,data));
     }
 
-    private static class ServiceReceiver extends Handler {
+    private class ServiceReceiver extends Handler {
         WeightActivity ctx;
 
         ServiceReceiver(WeightActivity weightActivity) {
@@ -158,6 +158,10 @@ public class WeightActivity extends BaseActivity {
                 return;
             }
 
+            Object stepdown  = data.get("stepdown ");
+            if (stepdown != null && !stepdown.equals("")) {
+                ctx.startActivity(new Intent(WeightActivity.this,SplashActivity.class));
+            }
         }
     }
 

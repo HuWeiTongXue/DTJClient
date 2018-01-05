@@ -133,7 +133,7 @@ public class HeightActivity extends BaseActivity {
         queue.post(new ServiceSender(HeightActivity.this,data));
     }
 
-    private static class ServiceReceiver extends Handler {
+    private class ServiceReceiver extends Handler {
         HeightActivity ctx;
 
         ServiceReceiver(HeightActivity heightActivity) {
@@ -168,6 +168,10 @@ public class HeightActivity extends BaseActivity {
             Object wakeup = data.get("wakeup");
             if (wakeup != null && !wakeup.equals("")) {
                 return;
+            }
+            Object stepdown  = data.get("stepdown ");
+            if (stepdown != null && !stepdown.equals("")) {
+                ctx.startActivity(new Intent(HeightActivity.this,SplashActivity.class));
             }
 
         }

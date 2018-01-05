@@ -109,7 +109,7 @@ public class QRCodeActivity extends BaseActivity {
 
     }
 
-    private static class ServiceReceiver extends Handler {
+    private class ServiceReceiver extends Handler {
         QRCodeActivity ctx;
 
         ServiceReceiver(QRCodeActivity qrCodeActivity) {
@@ -150,6 +150,11 @@ public class QRCodeActivity extends BaseActivity {
             Object wakeup = data.get("wakeup");
             if (wakeup != null && !wakeup.equals("")) {
                 return;
+            }
+
+            Object stepdown  = data.get("stepdown ");
+            if (stepdown != null && !stepdown.equals("")) {
+                ctx.startActivity(new Intent(QRCodeActivity.this,SplashActivity.class));
             }
         }
     }

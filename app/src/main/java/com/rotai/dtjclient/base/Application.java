@@ -32,7 +32,6 @@ public class Application extends android.app.Application {
     public static int stateCount = 0;
 
 
-
     /**
      * 服务相关
      */

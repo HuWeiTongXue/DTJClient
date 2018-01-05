@@ -112,7 +112,7 @@ public class FaceActivity extends BaseActivity {
 
     }
 
-    private static class ServiceReceiver extends Handler {
+    private class ServiceReceiver extends Handler {
         FaceActivity ctx;
 
         ServiceReceiver(FaceActivity faceActivity) {
@@ -130,6 +130,11 @@ public class FaceActivity extends BaseActivity {
             Object wakeup = data.get("wakeup");
             if (wakeup != null && !wakeup.equals("")) {
                 return;
+            }
+
+            Object stepdown  = data.get("stepdown ");
+            if (stepdown != null && !stepdown.equals("")) {
+                ctx.startActivity(new Intent(FaceActivity.this,SplashActivity.class));
             }
 
             final int age = data.getInt("age");

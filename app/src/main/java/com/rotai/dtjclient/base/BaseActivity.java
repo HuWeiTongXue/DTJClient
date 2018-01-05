@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.rotai.dtjclient.activity.ReadyActivity;
 import com.rotai.dtjclient.util.LogUtil;
 
 import java.io.IOException;
@@ -20,6 +21,8 @@ import java.io.IOException;
 public class BaseActivity extends AppCompatActivity {
 
     public static final String TAG="dtjclient";
+
+    private boolean isWorking=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +35,21 @@ public class BaseActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
         AppManager.getInstance().addActivity(this);
+        checkActivity();
+    }
 
+    private void checkActivity() {
+        if(getClass().getSimpleName().equals("ReadyActivity")
+                ||getClass().getSimpleName().equals("HeightActivity")
+                ||getClass().getSimpleName().equals("WeightActivity")
+                ||getClass().getSimpleName().equals("BFPActivity")
+                ||getClass().getSimpleName().equals("FaceActivity")
+                ||getClass().getSimpleName().equals("CompleteActivity")
+                ){
+            isWorking=true;
+        }else {
+            isWorking=false;
+        }
     }
 
     @Override
