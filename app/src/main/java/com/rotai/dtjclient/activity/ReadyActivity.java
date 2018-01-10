@@ -93,8 +93,9 @@ public class ReadyActivity extends BaseActivity {
                 return;
             }
 
-            Object stepdown  = data.get("stepdown ");
-            if (stepdown != null && !stepdown.equals("")) {
+            int stepdown  = (int) data.get("stepdown");
+            if (stepdown==1) {
+                Log.e(TAG, "stepdown=="+stepdown );
                 ctx.startActivity(new Intent(ReadyActivity.this,SplashActivity.class));
             }
         }

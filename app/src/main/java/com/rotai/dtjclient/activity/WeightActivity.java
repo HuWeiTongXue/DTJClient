@@ -137,7 +137,7 @@ public class WeightActivity extends BaseActivity {
             final float weight = (float) data.getDouble("weight");
             LogUtil.e(TAG, "data=="+data+",,,weigth"+weight );
 
-            if(weight>20.0){
+            if(weight>0){
                 if (ctx.jumping) return;
                 ctx.jumping = true;
                 ctx.queue.post(new Runnable() {

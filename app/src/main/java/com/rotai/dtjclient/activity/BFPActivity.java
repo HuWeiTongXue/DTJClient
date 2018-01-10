@@ -139,7 +139,7 @@ public class BFPActivity extends BaseActivity {
             final float bfp = (float) data.getDouble("bfp");
             LogUtil.e(TAG, "data=="+data+",,,bfp=="+bfp );
 
-            if(bfp>5.0f){
+            if(bfp>0f){
                 if (ctx.jumping) return;
                 ctx.jumping = true;
                 ctx.queue.post(new Runnable() {

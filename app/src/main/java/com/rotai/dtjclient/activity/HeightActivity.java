@@ -150,7 +150,7 @@ public class HeightActivity extends BaseActivity {
             final float height = (float) data.getDouble("height");
             LogUtil.e(TAG, "data==" + data + ",,,heigth" + height);
 
-            if (height > 100f) {
+            if (height > 0) {
                 if (ctx.jumping) return;
                 ctx.jumping = true;
                 ctx.queue.post(new Runnable() {
