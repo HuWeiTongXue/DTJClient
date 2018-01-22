@@ -13,7 +13,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
 
+import com.cunoraz.gifview.library.GifView;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -72,6 +74,10 @@ public class BFPActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bmi);
+
+        GifView gifView1 = (GifView) findViewById(R.id.gif);
+        gifView1.setVisibility(View.VISIBLE);
+        gifView1.play();
 
         queue = new Handler(Looper.myLooper());
 

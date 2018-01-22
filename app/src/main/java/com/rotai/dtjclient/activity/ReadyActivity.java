@@ -28,7 +28,6 @@ public class ReadyActivity extends BaseActivity {
 
     private TextView time;
 
-
     Handler queue=new Handler(Looper.myLooper());
 
     /**
