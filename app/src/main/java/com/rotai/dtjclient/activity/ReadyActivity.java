@@ -18,7 +18,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.rotai.dtjclient.R;
-import com.rotai.dtjclient.base.Application;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
 
@@ -28,13 +27,13 @@ public class ReadyActivity extends BaseActivity {
 
     private TextView time;
 
-    Handler queue=new Handler(Looper.myLooper());
+    Handler queue = new Handler(Looper.myLooper());
 
     /**
      * data
      */
-    AssetFileDescriptor file1,file2;
-    MediaPlayer mediaPlayer1,mediaPlayer2;
+    AssetFileDescriptor file1, file2;
+    MediaPlayer mediaPlayer1, mediaPlayer2;
 
     /**
      * 服务相关
@@ -86,16 +85,19 @@ public class ReadyActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
+            if (data.getInt("network") == 1) {
+                int wakeup = data.getInt("wakeup");
+                if (wakeup ==1) {
+                    return;
+                }
 
-            Object wakeup = data.get("wakeup");
-            if (wakeup != null && !wakeup.equals("")) {
-                return;
-            }
-
-            int stepdown  = (int) data.get("stepdown");
-            if (stepdown==1) {
-                Log.e(TAG, "stepdown=="+stepdown );
-                ctx.startActivity(new Intent(ReadyActivity.this,SplashActivity.class));
+                int stepdown =  data.getInt("stepdown");
+                if (stepdown == 1) {
+                    Log.e(TAG, "ready stepdown==" + stepdown);
+                    ctx.startActivity(new Intent(ReadyActivity.this, SplashActivity.class));
+                }
+            } else {
+                startActivity(new Intent(ReadyActivity.this, SplashActivity.class));
             }
         }
     }
@@ -126,39 +128,51 @@ public class ReadyActivity extends BaseActivity {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
-    };
+    }
+
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ready);
-        time=findViewById(R.id.time);
+        time = findViewById(R.id.time);
 
         file1 = this.getResources().openRawResourceFd(R.raw.ready);
         mediaPlayer1 = buildMediaPlayer(this, file1);
         //        file2 = this.getResources().openRawResourceFd(R.raw.ready2);
 
-//        mediaPlayer2 = buildMediaPlayer(this, file2);
+        //        mediaPlayer2 = buildMediaPlayer(this, file2);
 
         mediaPlayer1.start();
 
-        final CountDownTimer downTimer = new CountDownTimer(5 * 1000+1050, 1000) {
+        final CountDownTimer downTimer = new CountDownTimer(5 * 1000 + 1050, 1000) {
             @SuppressLint("SetTextI18n")
             @Override
             public void onTick(long millisUntilFinished) {
-                time.setText((millisUntilFinished / 1000-1) + "");
+                time.setText((millisUntilFinished / 1000 - 1) + "");
             }
 
             @Override
-            public void onFinish() {
-                startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
-//                mediaPlayer2.start();
-//                mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                    @Override
-//                    public void onCompletion(MediaPlayer mp) {
-//                        startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
-//                    }
-//                });
+            public void onFinish() {  //倒计时结束
+                queue.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bundle data = new Bundle();
+                        data.putString("op", "start");
+                        queue.post(new ServiceSender(ReadyActivity.this, data));
+                    }
+                });
+
+                startActivity(new Intent(ReadyActivity.this, HeightActivity.class));
+
+                //                mediaPlayer2.start();
+                //                mediaPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                //                    @Override
+                //                    public void onCompletion(MediaPlayer mp) {
+                //                        startActivity(new Intent(ReadyActivity.this, QRCodeActivity.class));
+                //                    }
+                //                });
 
             }
         };
@@ -175,9 +189,18 @@ public class ReadyActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         mediaPlayer1.release();
-//        mediaPlayer2.release();
-        mediaPlayer1=null;
-//        mediaPlayer2=null;
+        //        mediaPlayer2.release();
+        mediaPlayer1 = null;
+        //        mediaPlayer2=null;
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Bundle data = new Bundle();
+        data.putString("op", "bye");
+        queue.post(new ServiceSender(ReadyActivity.this, data));
     }
 }

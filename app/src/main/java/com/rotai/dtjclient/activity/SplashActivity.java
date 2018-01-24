@@ -17,8 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.rotai.dtjclient.MainActivity;
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
@@ -43,6 +43,11 @@ public class SplashActivity extends BaseActivity {
      */
     AssetFileDescriptor file;
     MediaPlayer mediaPlayer;
+
+    /**
+     * UI
+     */
+    private TextView networkState;
 
     /**
      * 服务相关
@@ -92,19 +97,21 @@ public class SplashActivity extends BaseActivity {
 
         AutoScrollViewPager pic_viewPager = findViewById(R.id.activity_viewPager);
 
+        networkState = findViewById(R.id.networkState);
+
         startViewPager(pic_viewPager);
 
-//        file = this.getResources().openRawResourceFd(R.raw.adtips);
-//
-//        mediaPlayer = buildMediaPlayer(this, file);
-//        mediaPlayer.start();
-//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//                mediaPlayer.start();
-//                mediaPlayer.setLooping(true);
-//            }
-//        });
+        //        file = this.getResources().openRawResourceFd(R.raw.adtips);
+        //
+        //        mediaPlayer = buildMediaPlayer(this, file);
+        //        mediaPlayer.start();
+        //        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        //            @Override
+        //            public void onCompletion(MediaPlayer mp) {
+        //                mediaPlayer.start();
+        //                mediaPlayer.setLooping(true);
+        //            }
+        //        });
 
         LogUtil.e(TAG, "com.rotai.app.DTJService");
 
@@ -116,8 +123,8 @@ public class SplashActivity extends BaseActivity {
                 Bundle data = new Bundle();
                 data.putString("op", "hi");
                 data.putInt("versionCode", versionCode);
-                data.putString("versionName",versionName);
-                queue.post(new ServiceSender(SplashActivity.this,data));
+                data.putString("versionName", versionName);
+                queue.post(new ServiceSender(SplashActivity.this, data));
             }
         });
     }
@@ -126,8 +133,8 @@ public class SplashActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         LogUtil.d(TAG, "onPause");
-//        mediaPlayer.release();
-//        mediaPlayer=null;
+        //        mediaPlayer.release();
+        //        mediaPlayer=null;
         finish();
     }
 
@@ -138,7 +145,7 @@ public class SplashActivity extends BaseActivity {
 
         Bundle data = new Bundle();
         data.putString("op", "bye");
-        queue.post(new ServiceSender(SplashActivity.this,data));
+        queue.post(new ServiceSender(SplashActivity.this, data));
     }
 
     private static class ServiceSender implements Runnable {
@@ -167,7 +174,9 @@ public class SplashActivity extends BaseActivity {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
-    };
+    }
+
+    ;
 
     private static class ServiceReceiver extends Handler {
         SplashActivity ctx;
@@ -183,14 +192,19 @@ public class SplashActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            Object wakeup = data.get("wakeup");
-            if (wakeup != null && !wakeup.equals("")) {
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ctx.startActivity(new Intent(ctx, ReadyActivity.class));
-                    }
-                });
+            if (data.getInt("network") == 1) {
+                ctx.networkState.setVisibility(View.GONE);
+                int wakeup = data.getInt("wakeup");
+                if (wakeup == 1) {
+                    ctx.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
+                        }
+                    });
+                }
+            } else if(data.getInt("network")==0){
+                ctx.networkState.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -236,6 +250,5 @@ public class SplashActivity extends BaseActivity {
         pic_viewPager.setCycle(true);
         pic_viewPager.setBorderAnimation(false);
     }
-
 
 }

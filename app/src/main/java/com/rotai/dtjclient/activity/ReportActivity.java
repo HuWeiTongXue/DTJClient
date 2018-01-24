@@ -3,16 +3,14 @@ package com.rotai.dtjclient.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +37,7 @@ public class ReportActivity extends BaseActivity {
     private ImageView report_status_iv;
     private TextView report_status_tv;
     private Random mRandom;
-    private float mCurrent=5.0f; //当前进度值
+    private float mCurrent = 5.0f; //当前进度值
     private TextView waitReport;
 
     /**
@@ -93,62 +91,74 @@ public class ReportActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
+            if (data.getInt("network") == 1) {
+                int wakeup = data.getInt("wakeup");
+                if (wakeup == 1) {
+                    return;
+                }
 
-            Object wakeup = data.get("wakeup");
-            if (wakeup != null && !wakeup.equals("")) {
-                return;
-            }
+                int stepdown = data.getInt("stepdown");
+                if (stepdown == 1) {
+                    Log.e(TAG, "下秤了。。");
+                    ctx.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(new Intent(ReportActivity.this, SplashActivity.class));
+                        }
+                    });
+                }
 
-            Object report = data.get("report");  //报告生成成功
-            if (report != null && !report.equals("")) {
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ctx.waitReport.setVisibility(View.GONE);
-                        ctx.mWaveProgress.setVisibility(View.VISIBLE);
-                        ctx.reporting.setVisibility(View.VISIBLE);
-                        ctx.report_status_iv.setVisibility(View.GONE);
-                        ctx.report_status_tv.setVisibility(View.GONE);
-                        ctx.queue.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(ctx.mCurrent<100.0f){
-                                    ctx.mCurrent+=Math.random()*10;
-                                    ctx.queue.postDelayed(this,1000);
-                                }if(ctx.mCurrent>=100.0f){
-                                    ctx.mCurrent=100.0f;
-                                    ctx.mWaveProgress.setVisibility(View.GONE);
-                                    ctx.report_status_iv.setVisibility(View.VISIBLE);
-                                    ctx.report_status_iv.setImageResource(R.mipmap.report);
-                                    ctx.reporting.setText("报告生成成功，请在微信公众号中查看您的报告！\n10秒后结束本次测量");
-                                    ctx.mCurrent=0;
-                                    ctx.queue.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ctx.startActivity(new Intent(ReportActivity.this,SplashActivity.class));
-                                        }
-                                    },10000);
+                Object report = data.get("report");  //报告生成成功
+                if (report != null && !report.equals("")) {
+                    ctx.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ctx.waitReport.setVisibility(View.GONE);
+                            ctx.mWaveProgress.setVisibility(View.VISIBLE);
+                            ctx.reporting.setVisibility(View.VISIBLE);
+                            ctx.report_status_iv.setVisibility(View.GONE);
+                            ctx.report_status_tv.setVisibility(View.GONE);
+                            ctx.queue.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (ctx.mCurrent < 100.0f) {
+                                        ctx.mCurrent += Math.random() * 10;
+                                        ctx.queue.postDelayed(this, 1000);
+                                    }
+                                    if (ctx.mCurrent >= 100.0f) {
+                                        ctx.mCurrent = 100.0f;
+                                        ctx.mWaveProgress.setVisibility(View.GONE);
+                                        ctx.report_status_iv.setVisibility(View.VISIBLE);
+                                        ctx.report_status_iv.setImageResource(R.mipmap.report);
+                                        ctx.reporting.setText("报告生成成功，请在微信公众号中查看您的报告！\n10秒后结束本次测量");
+                                        ctx.mCurrent = 0;
+                                        ctx.queue.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ctx.startActivity(new Intent(ReportActivity.this, SplashActivity.class));
+                                            }
+                                        }, 10000);
+
+                                    }
+                                    ctx.mWaveProgress.setValue(ctx.mCurrent);
 
                                 }
-                                ctx.mWaveProgress.setValue(ctx.mCurrent);
+                            }, 1000);
+                        }
+                    });
+                }
 
-                            }
-                        },1000);
-                    }
-                });
+                Object report_failed = data.get("report_failed");
+                if (report_failed != null && !report_failed.equals("")) {
+                    ctx.mWaveProgress.setVisibility(View.GONE);
+                    ctx.reporting.setVisibility(View.GONE);
+                    ctx.waitReport.setVisibility(View.GONE);
+                    ctx.report_status_iv.setVisibility(View.VISIBLE);
+                    ctx.report_status_tv.setVisibility(View.VISIBLE);
+                    ctx.report_status_iv.setImageResource(R.mipmap.reportfailed);
+                    ctx.report_status_tv.setText("报告生成失败，请再测一次！");
+                }
             }
-
-            Object report_failed = data.get("report_failed");
-            if(report_failed!=null && !report_failed.equals("")){
-                ctx.mWaveProgress.setVisibility(View.GONE);
-                ctx.reporting.setVisibility(View.GONE);
-                ctx.waitReport.setVisibility(View.GONE);
-                ctx.report_status_iv.setVisibility(View.VISIBLE);
-                ctx.report_status_tv.setVisibility(View.VISIBLE);
-                ctx.report_status_iv.setImageResource(R.mipmap.reportfailed);
-                ctx.report_status_tv.setText("报告生成失败，请再测一次！");
-            }
-
         }
     }
 
@@ -191,11 +201,14 @@ public class ReportActivity extends BaseActivity {
         queue.post(connectService);
 
         mWaveProgress = (WaveProgress) findViewById(R.id.wave_progress_bar);
-        reporting=(TextView) findViewById(R.id.reporting);
-        report_status_iv=findViewById(R.id.report_status_iv);
-        report_status_tv=findViewById(R.id.report_status_tv);
-        waitReport=findViewById(R.id.waitReport);
+        reporting = (TextView) findViewById(R.id.reporting);
+        report_status_iv = findViewById(R.id.report_status_iv);
+        report_status_tv = findViewById(R.id.report_status_tv);
+        waitReport = findViewById(R.id.waitReport);
         mRandom = new Random();
+
+        //测试
+        waitReport.setText("报告已生成，请在微信中查看");
 
     }
 }

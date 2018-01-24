@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 按下时的背景图片 -->
+    <item android:state_enabled="true" android:state_pressed="true"  >
+        <shape>
+            <corners android:radius="10dp"/>
+            <solid android:color="#7f312c19"/>
+        </shape>
+
+    </item>
+    <!-- 默认时的背景图片 -->
+    <item android:state_pressed="false">
+        <shape>
+            <corners android:radius="10dp"/>
+            <solid android:color="#7f17a3e3"/>
+        </shape>
+
+    </item>
+
+</selector>

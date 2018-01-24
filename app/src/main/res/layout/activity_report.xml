@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/waitReport"
-        android:textSize="45sp"
+        android:textSize="55sp"
         android:gravity="center"
         android:textColor="#FFF"
         android:text="等待报告生成中..."

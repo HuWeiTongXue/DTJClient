@@ -1,5 +1,6 @@
 package com.rotai.dtjclient.activity;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -74,7 +75,6 @@ public class QRCodeActivity extends BaseActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,13 +102,14 @@ public class QRCodeActivity extends BaseActivity {
             @Override
             public void run() {
                 Bundle data = new Bundle();
-                data.putString("op", "qrcode");
+                data.putString("op", "wx_qrcode");
                 queue.post(new ServiceSender(QRCodeActivity.this,data));
             }
         });
 
     }
 
+    @SuppressLint("HandlerLeak")
     private class ServiceReceiver extends Handler {
         QRCodeActivity ctx;
 
@@ -123,39 +124,47 @@ public class QRCodeActivity extends BaseActivity {
             Bundle data = msg.getData();
             if (data == null)
                 return;
-            final String qrcode = data.getString("qrcode");
-            if(qrcode!=null && !qrcode.equals("")){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e(TAG, "显示公众号二维码" );
-//                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
-                        Bitmap bitmap = EncodingUtils.createQRCode(qrcode, 220, 220, null);
-                        ctx.qrcode_iv.setImageBitmap(bitmap);
-                    }
-                });
-            }
 
-            Object subscribe = data.get("wx_scan");
-            if(subscribe!=null && !subscribe.equals("")){
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e(TAG, "准备自动测量！ " );
-                        ctx.startActivity(new Intent(ctx, HeightActivity.class));
-                    }
-                });
-            }
+            if(data.getInt("network")==1) {
+                final String qrcode = data.getString("wx_qrcode");
 
-            Object wakeup = data.get("wakeup");
-            if (wakeup != null && !wakeup.equals("")) {
-                return;
-            }
+                Log.e(TAG, "wx_qrcode==" + qrcode);
 
-            int stepdown  = (int) data.get("stepdown");
-            if (stepdown==1) {
-                Log.e(TAG, "stepdown=="+stepdown );
-                ctx.startActivity(new Intent(QRCodeActivity.this,SplashActivity.class));
+                if (qrcode != null && !qrcode.equals("")) {
+                    ctx.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e(TAG, "显示公众号二维码");
+                            //                        ctx.startActivity(new Intent(ctx, QRCodeActivity.class));
+                            Bitmap bitmap = EncodingUtils.createQRCode(qrcode, 220, 220, null);
+                            ctx.qrcode_iv.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+
+                Object subscribe = data.get("wx_scan");
+                if (subscribe != null && !subscribe.equals("")) {
+                    ctx.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e(TAG, "准备自动测量！");
+                            ctx.startActivity(new Intent(ctx, ReadyActivity.class));
+                        }
+                    });
+                }
+
+                Object wakeup = data.get("wakeup");
+                if (wakeup != null && !wakeup.equals("")) {
+                    return;
+                }
+
+                int stepdown = data.getInt("stepdown");
+                if (stepdown == 1) {
+                    Log.e(TAG, "stepdown==" + stepdown);
+                    ctx.startActivity(new Intent(QRCodeActivity.this, SplashActivity.class));
+                }
+            }else if(data.getInt("network")==0){
+                startActivity(new Intent(QRCodeActivity.this,SplashActivity.class));
             }
         }
     }
@@ -186,7 +195,7 @@ public class QRCodeActivity extends BaseActivity {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
-    };
+    }
 
     @Override
     protected void onPause() {

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.BaseActivity;
@@ -41,6 +42,8 @@ public class LoadingActivity extends BaseActivity {
 
     OkHttpClient okHttpClient = new OkHttpClient();
 
+    private TextView loading_tip;
+
     @SuppressLint("HandlerLeak")
     private Handler handler=new Handler(){
         @Override
@@ -59,6 +62,8 @@ public class LoadingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+
+        loading_tip=findViewById(R.id.loading_tip);
 
         HandlerThread worker = new HandlerThread(TAG + this.getClass().getSimpleName() + "_Woker");
         worker.start();
@@ -94,6 +99,14 @@ public class LoadingActivity extends BaseActivity {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     LogUtil.e(TAG, "onFailure2: ");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loading_tip.setText("下载失败，请重试");
+                        }
+                    });
+
                 }
 
                 @Override
@@ -117,6 +130,14 @@ public class LoadingActivity extends BaseActivity {
                     is.close();
                     LogUtil.e(TAG, "onResponse: 下载成功");
 
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loading_tip.setText("下载成功");
+                        }
+                    });
+
+
                     Message message = new Message();
                     message.what=1;
                     handler.sendMessage(message);
@@ -124,6 +145,4 @@ public class LoadingActivity extends BaseActivity {
             });
         }
     }
-
-
 }

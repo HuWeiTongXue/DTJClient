@@ -4,7 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@mipmap/loading"
+    android:background="@mipmap/main_bg"
     tools:context="com.rotai.dtjclient.activity.LoadingActivity">
+
+
+    <TextView
+        android:id="@+id/loading_tip"
+        android:textSize="50sp"
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:text="请稍后..."
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
 
 </RelativeLayout>

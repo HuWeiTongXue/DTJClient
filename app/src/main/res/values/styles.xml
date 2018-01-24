@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- dialog样式 -->
+    <!--<style name="dialog_custom" parent="@android:style/Theme.Dialog">-->
+        <!--<item name="android:windowIsFloating">true</item>    &lt;!&ndash;是否浮在界面上&ndash;&gt;-->
+        <!--<item name="android:windowIsTranslucent">true</item> &lt;!&ndash;是否半透明&ndash;&gt;-->
+        <!--<item name="android:windowNoTitle">false</item>       &lt;!&ndash;是否有标题&ndash;&gt;-->
+        <!--<item name="android:windowBackground">@android:color/transparent</item> &lt;!&ndash;窗口背景色透明&ndash;&gt;-->
+        <!--<item name="android:backgroundDimEnabled">false</item> &lt;!&ndash;背景是否模糊显示&ndash;&gt;-->
+    <!--</style>-->
+
+    <!-- dialog底部弹出菜单动画 -->
+    <!--<style name="bottom_menu_animation" parent="android:Animation">-->
+        <!--<item name="@android:windowEnterAnimation">@anim/bottom_menu_enter</item>-->
+        <!--<item name="@android:windowExitAnimation">@anim/bottom_menu_exit</item>-->
+    <!--</style>-->
+
+    <style name="AlertDialogCustom" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
 </resources>
