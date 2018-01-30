@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/content_bg"
+    tools:context="com.rotai.dtjclient.activity.FaceActivity">
+
+    <LinearLayout
+        android:padding="5dp"
+        android:id="@+id/small_img_ll"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/face_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img5"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img6"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img7"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:background="@drawable/small_face_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/small_img8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@mipmap/img_wait" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <!--<ImageView-->
+        <!--android:background="#ee0707"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--tools:ignore="ContentDescription"-->
+        <!--android:layout_below="@id/small_img_ll"-->
+        <!--android:id="@+id/scanHorizontalLineImageView"-->
+        <!--android:layout_width="720dp"-->
+        <!--android:layout_height="2dp" />-->
+
+
+    <TextureView
+        android:scaleX="-1"
+        android:id="@+id/camera_view"
+        android:layout_width="600dp"
+        android:layout_height="800dp"
+        android:layout_below="@id/small_img_ll"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        tools:ignore="ContentDescription" />
+
+    <com.rotai.dtjclient.view.MyView
+        android:alpha="0.8"
+        android:layout_width="600dp"
+        android:layout_height="800dp"
+        android:layout_below="@id/small_img_ll"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        tools:ignore="ContentDescription" />
+
+
+    <!--&lt;!&ndash;实时预览&ndash;&gt;-->
+    <!--<LinearLayout-->
+    <!--android:layout_width="480dp"-->
+    <!--android:layout_height="640dp"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:gravity="center"-->
+    <!--android:text="实时预览"-->
+    <!--android:textColor="#FFF"-->
+    <!--android:textSize="35sp" />-->
+    <!---->
+    <!--</LinearLayout>-->
+    <!---->
+
+
+</RelativeLayout>

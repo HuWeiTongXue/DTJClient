@@ -9,22 +9,22 @@
 
     <TextView
         android:id="@+id/title"
-        android:textSize="90sp"
-        android:textColor="#FFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="欢迎使用小体体测设备\n5s后开始检测"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textColor="#FFF"
+        android:textSize="90sp" />
 
     <TextView
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
         android:layout_marginTop="35dp"
         android:gravity="center"
         android:textColor="#FFF"
-        android:layout_below="@+id/title"
-        android:id="@+id/time"
-        android:textSize="150sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textSize="150sp" />
 
 
 </RelativeLayout>

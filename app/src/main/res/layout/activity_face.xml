@@ -1,17 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/main_bg"
-    android:gravity="center"
     tools:context="com.rotai.dtjclient.activity.FaceActivity">
 
-    <com.cunoraz.gifview.library.GifView
-        android:id="@+id/gif"
-        android:layout_width="wrap_content"
+    <!--<ImageView-->
+    <!--android:id="@+id/camera_face"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_width="400dp"-->
+    <!--android:layout_height="400dp" />-->
+
+    <!--<com.cunoraz.gifview.library.GifView-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:id="@+id/gif"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:visibility="gone"-->
+    <!--custom:gif="@mipmap/gif_face" />-->
+
+    <!--<com.rotai.dtjclient.view.MyView-->
+    <!--android:id="@+id/myView"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_width="400dp"-->
+    <!--android:layout_height="400dp" />-->
+
+    <LinearLayout
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="300dp"
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        custom:gif="@mipmap/gif_face" />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!--实时预览-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="800dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="实时预览"
+                android:textColor="#FFF"
+                android:textSize="35sp" />
+
+            <TextureView
+                android:id="@+id/camera_view"
+                android:layout_width="480dp"
+                android:layout_height="640dp"
+                android:layout_margin="4dp"
+                tools:ignore="ContentDescription" />
+
+        </LinearLayout>
+
+        <!--人脸识别-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="800dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="人脸检测"
+                android:textColor="#FFF"
+                android:textSize="35sp" />
+
+            <AbsoluteLayout
+                android:layout_width="480dp"
+                android:layout_height="640dp">
+
+                <!--被检测图像-->
+                <ImageView
+                    android:id="@+id/camera_view_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_x="0dp"
+                    android:layout_y="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/gogo"
+                    tools:ignore="ContentDescription" />
+
+                <!--检测框-->
+                <RelativeLayout
+                    android:id="@+id/test_rl"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_x="0dp"
+                    android:layout_y="0dp">
+
+                    <!--方框-->
+                    <ImageView
+                        android:id="@+id/square"
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:layout_alignParentStart="true"
+                        android:background="@mipmap/square" />
+
+                    <RelativeLayout
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/square"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/age"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="年龄：25岁"
+                            android:textColor="#FFF"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/sex"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/age"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:text="性别：男"
+                            android:textColor="#FFF"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+            </AbsoluteLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="正在检测人脸，请稍后..."
+        android:textColor="#FFF"
+        android:textSize="45sp"
+        android:textStyle="bold" />
+
+
 </RelativeLayout>

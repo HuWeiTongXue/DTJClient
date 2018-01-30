@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.AssetFileDescriptor;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,23 +12,32 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
-import com.rotai.dtjclient.MainActivity;
-import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.util.LogUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.rotai.dtjclient.base.BaseActivity.buildMediaPlayer;
 
 public class Application extends android.app.Application {
 
     public static final String TAG = "dtjclient";
 
-    private static Application mApplication = null;
+    public static Application mApplication = null;
 
     public static int stateCount = 0;
 
+    /**
+     * 人脸检测相关
+     */
+    public interface ServiceMessageCallback {
+        void message(Bundle msg);
+    }
+
+    public List<ServiceMessageCallback> serviceMessageCallbacks = new ArrayList<>();
 
     /**
      * 服务相关
@@ -128,8 +135,8 @@ public class Application extends android.app.Application {
     private static class ServiceReceiver extends Handler {
         Application ctx;
 
-        ServiceReceiver(Application application) {
-            ctx = application;
+        ServiceReceiver(Application ctx) {
+            this.ctx = ctx;
         }
 
         @Override
@@ -137,9 +144,10 @@ public class Application extends android.app.Application {
             super.handleMessage(msg);
 
             Bundle data = msg.getData();
-            if (data == null)
-                return;
+            if (data.getInt("reply")==1) return;
 
+            for (ServiceMessageCallback callback : ctx.serviceMessageCallbacks)
+                callback.message(data);
         }
     }
 
@@ -169,6 +177,13 @@ public class Application extends android.app.Application {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
+    }
+
+    //隐藏底部
+    public static void sidebuttom(Window window) {
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        window.setAttributes(params);
     }
 
 }
