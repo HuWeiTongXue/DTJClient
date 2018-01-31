@@ -23,12 +23,14 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.Application;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
+import com.rotai.dtjclient.view.customView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("deprecation")
 public class FaceActivity extends BaseActivity {
-
 
     /**
      * dialog
@@ -56,12 +57,12 @@ public class FaceActivity extends BaseActivity {
     private Handler bgQueue;
     private Camera camera;
     private TextureView previewView;  //实时预览
-    private int count=0;
+    private int count = 0;
 
     /**
      * 小图
      */
-    private ImageView small1,small2,small3,small4,small5,small6,small7,small8;
+    private ImageView small1, small2, small3, small4, small5, small6, small7, small8;
 
     /**
      * data
@@ -114,7 +115,7 @@ public class FaceActivity extends BaseActivity {
                 return;
             try {
                 LogUtil.d(TAG, "open camera");
-                camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+                camera = Camera.open();
                 FaceActivity.this.camera.setDisplayOrientation(270);
                 FaceActivity.this.camera.setPreviewTexture(previewView.getSurfaceTexture());
                 FaceActivity.this.camera.startPreview();
@@ -140,23 +141,18 @@ public class FaceActivity extends BaseActivity {
             }
         }
     };
-
-//    Application ctx;
-//
-//    public void FaceActivity(Application ctx) {
-//        this.ctx = ctx;
-//    }
+    private TextView top_test;
+    private RelativeLayout scan_rl;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_face2);
+        setContentView(R.layout.activity_face3);
 
         initView();
 
         queue = new Handler(Looper.myLooper());
-
 
         HandlerThread worker = new HandlerThread("BackgroundWoker");
         worker.start();
@@ -201,54 +197,66 @@ public class FaceActivity extends BaseActivity {
         });
         mediaPlayer.start();
 
-
-        Application.getInstance().serviceMessageCallbacks.add(new Application.ServiceMessageCallback() {
+        Application.mApplication.serviceMessageCallbacks.add(new Application.ServiceMessageCallback() {
             @Override
             public void message(final Bundle msg) {
-                count++;
-                Log.e(TAG, "count=="+count );
+                Log.e(TAG, "message，data============"+LogUtil.bundleToStr(msg) );
                 final byte[] data = msg.getByteArray("camera_frame");
-                if (data == null) return;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(count==0){
-                            small1.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==1){
-                            small2.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==2){
-                            small3.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==3){
-                            small4.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==4){
-                            small5.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==5){
-                            small6.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==6){
-                            small7.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                        }else if(count==7){
-                            small8.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                final int top = msg.getInt("top");
+                Log.e(TAG, "count==" + count+",,data=="+data);
+                if (data == null){
+                    return;
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            top_test.setText("top值=" + top);
+                            if (top > 400) {
+                                RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                                scan_rl_Params.setMargins(0, top - 485 + 200, 0, 0);
+                                scan_rl.setLayoutParams(scan_rl_Params);
+                            } else {
+                                RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                                scan_rl_Params.setMargins(0, 120, 0, 0);
+                                scan_rl.setLayoutParams(scan_rl_Params);
+                            }
+                            if (count % 8 == 0) {
+                                small1.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 1) {
+                                small2.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 2) {
+                                small3.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 3) {
+                                small4.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 4) {
+                                small5.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 5) {
+                                small6.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 6) {
+                                small7.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            } else if (count % 8 == 7) {
+                                small8.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            }
                         }
-                    }
-                });
-
+                    });
+                    count++;
+                }
             }
         });
-
-        LogUtil.e(TAG, "com.rotai.app.DTJService");
-
     }
 
     private void initView() {
         previewView = findViewById(R.id.camera_view);
-        small1=findViewById(R.id.small_img1);
-        small2=findViewById(R.id.small_img2);
-        small3=findViewById(R.id.small_img3);
-        small4=findViewById(R.id.small_img4);
-        small5=findViewById(R.id.small_img5);
-        small6=findViewById(R.id.small_img6);
-        small7=findViewById(R.id.small_img7);
-        small8=findViewById(R.id.small_img8);
+        small1 = findViewById(R.id.small_img1);
+        small2 = findViewById(R.id.small_img2);
+        small3 = findViewById(R.id.small_img3);
+        small4 = findViewById(R.id.small_img4);
+        small5 = findViewById(R.id.small_img5);
+        small6 = findViewById(R.id.small_img6);
+        small7 = findViewById(R.id.small_img7);
+        small8 = findViewById(R.id.small_img8);
+        top_test = findViewById(R.id.height_test);
+        scan_rl=findViewById(R.id.scan_rl);
     }
 
     @Override
@@ -269,12 +277,16 @@ public class FaceActivity extends BaseActivity {
             super.handleMessage(msg);
 
             Bundle data = msg.getData();
+            for (Application.ServiceMessageCallback callback : Application.mApplication.serviceMessageCallbacks)
+                callback.message(data);
 
-            Log.e(TAG, "data============" + bundleToStr(data));
+            // Log.e(TAG, "data===" + bundleToStr(data));
             if (data == null)
                 return;
 
             if (data.getInt("network") == 1) {
+
+                //收到唤醒
                 int wakeup = data.getInt("wakeup");
                 if (wakeup == 1) {
                     if (mDialog != null && mDialog.isShowing()) {
@@ -298,6 +310,7 @@ public class FaceActivity extends BaseActivity {
                     }
                 }
 
+                //收到下秤
                 int stepdown = data.getInt("stepdown");
                 if (stepdown == 1) {
                     Log.e(TAG, "下秤了。。");
@@ -352,7 +365,6 @@ public class FaceActivity extends BaseActivity {
                             }
                         });
                     }
-
                     mOffTime.cancel();
                 }
                 super.handleMessage(msg);
@@ -422,20 +434,17 @@ public class FaceActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        camera.release();
-        Log.e(TAG, "释放相机");
-
+        Log.e(TAG, "onPause: ");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        count=0;
+        count = 0;
 
         bgQueue.post(cameraOff);
-
+        Log.e(TAG, "释放相机");
         Bundle data = new Bundle();
         data.putString("op", "bye");
         queue.post(new ServiceSender(FaceActivity.this, data));
@@ -445,5 +454,4 @@ public class FaceActivity extends BaseActivity {
         }
         finish();
     }
-
 }

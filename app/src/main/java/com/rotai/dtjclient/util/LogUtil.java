@@ -25,7 +25,7 @@ public class LogUtil {
         return android.util.Log.e(tag, msg, null);
     }
 
-    static void send(String msg) {
+    public static void send(String msg) {
         if (Application.serviceMessenger != null) {
             try {
                 Message message = Message.obtain();
@@ -36,5 +36,19 @@ public class LogUtil {
                 Application.serviceMessenger.send(message);
             } catch (RemoteException ignore) { }
         }
+    }
+
+    public static String bundleToStr(Bundle data) {
+        StringBuilder sb = new StringBuilder();
+        for (String key : data.keySet())
+            sb.append(key).append(": ").append(data.get(key)).append(", ");
+        if (sb.length() == 0)
+            sb.append("empty");
+        else {
+            sb.insert(0, "{ ");
+            sb.delete(sb.length() - 2, sb.length());
+            sb.append(" }");
+        }
+        return sb.toString();
     }
 }

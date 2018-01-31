@@ -146,8 +146,7 @@ public class Application extends android.app.Application {
             Bundle data = msg.getData();
             if (data.getInt("reply")==1) return;
 
-            for (ServiceMessageCallback callback : ctx.serviceMessageCallbacks)
-                callback.message(data);
+
         }
     }
 

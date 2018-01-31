@@ -3,11 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/content_bg"
+    android:background="#f5e8e8"
     tools:context="com.rotai.dtjclient.activity.FaceActivity">
 
+    <!--标题-->
+    <TextView
+        android:layout_marginTop="35dp"
+        android:id="@+id/title"
+        android:text="面部肤质检测"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:gravity="center"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--小图-->
     <LinearLayout
-        android:padding="5dp"
+        android:layout_below="@id/title"
         android:id="@+id/small_img_ll"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -16,180 +29,204 @@
         android:layout_marginTop="60dp"
         android:background="@drawable/face_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img6"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img7"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/small_face_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/small_img8"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@mipmap/img_wait" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
         </RelativeLayout>
 
     </LinearLayout>
 
-
-    <!--<ImageView-->
-        <!--android:background="#ee0707"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--tools:ignore="ContentDescription"-->
-        <!--android:layout_below="@id/small_img_ll"-->
-        <!--android:id="@+id/scanHorizontalLineImageView"-->
-        <!--android:layout_width="720dp"-->
-        <!--android:layout_height="2dp" />-->
-
-
-    <TextureView
-        android:scaleX="-1"
-        android:id="@+id/camera_view"
-        android:layout_width="600dp"
-        android:layout_height="800dp"
+    <!--可动态调整的预览布局-->
+    <RelativeLayout
+        android:id="@+id/scan_rl"
         android:layout_below="@id/small_img_ll"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        tools:ignore="ContentDescription" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <com.rotai.dtjclient.view.MyView
-        android:alpha="0.8"
-        android:layout_width="600dp"
-        android:layout_height="800dp"
-        android:layout_below="@id/small_img_ll"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        tools:ignore="ContentDescription" />
+        <!--提示-->
+        <TextView
+            android:layout_marginTop="35dp"
+            android:id="@+id/tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="请将您的面部对准扫描框"
+            android:textColor="#000"
+            android:textSize="48sp"
+            android:textStyle="bold" />
 
+        <!--预览图-->
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tips">
 
-    <!--&lt;!&ndash;实时预览&ndash;&gt;-->
-    <!--<LinearLayout-->
-    <!--android:layout_width="480dp"-->
-    <!--android:layout_height="640dp"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical">-->
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
 
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="20dp"-->
-    <!--android:gravity="center"-->
-    <!--android:text="实时预览"-->
-    <!--android:textColor="#FFF"-->
-    <!--android:textSize="35sp" />-->
-    <!---->
-    <!--</LinearLayout>-->
-    <!---->
+                <TextureView
+                    android:id="@+id/camera_view"
+                    android:layout_width="600dp"
+                    android:layout_height="800dp"
+                    android:layout_marginTop="40dp"
+                    android:scaleX="-1"
+                    tools:ignore="ContentDescription" />
 
+                <com.rotai.dtjclient.view.MyView
+                    android:id="@+id/drawIv"
+                    android:layout_width="600dp"
+                    android:layout_height="800dp"
+                    android:layout_marginTop="40dp"
+                    tools:ignore="ContentDescription" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/height_test"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="top值=0"
+                android:layout_marginTop="15dp"
+                android:layout_below="@id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5e8e8"
+    tools:context="com.rotai.dtjclient.activity.FaceActivity">
+
+    <!--标题-->
+    <TextView
+        android:layout_marginTop="35dp"
+        android:id="@+id/title"
+        android:text="面部肤质检测"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:gravity="center"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <!--可动态调整的预览布局-->
+    <RelativeLayout
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="350dp"
+        android:id="@+id/scan_rl"
+        android:layout_below="@id/small_img_ll"
+        android:layout_width="600dp"
+        android:layout_height="900dp">
+
+        <!--提示-->
+        <TextView
+            android:id="@+id/tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="请将您的双眼对准上方的摄像头"
+            android:textColor="#000"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <!--预览图-->
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tips">
+
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <TextureView
+                    android:id="@+id/camera_view"
+                    android:layout_width="600dp"
+                    android:layout_height="800dp"
+                    android:scaleX="-1"
+                    tools:ignore="ContentDescription" />
+
+                <com.rotai.dtjclient.view.MyView
+                    android:id="@+id/drawIv"
+                    android:layout_width="600dp"
+                    android:layout_height="800dp"
+                    tools:ignore="ContentDescription" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/height_test"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="top值=0"
+                android:layout_below="@id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!--小图-->
+    <LinearLayout
+        android:layout_marginTop="70dp"
+        android:padding="8dp"
+        android:layout_alignTop="@id/scan_rl"
+        android:background="@drawable/face_bg"
+        android:layout_marginRight="30dp"
+        android:orientation="vertical"
+        android:layout_toLeftOf="@id/scan_rl"
+        android:layout_width="150dp"
+        android:layout_height="780dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img1"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img2"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img3"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img4"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="70dp"
+        android:padding="8dp"
+        android:layout_alignTop="@id/scan_rl"
+        android:background="@drawable/face_bg"
+        android:layout_marginLeft="30dp"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/scan_rl"
+        android:layout_width="150dp"
+        android:layout_height="780dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img5"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img6"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img7"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/small_face_bg"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/small_img8"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
