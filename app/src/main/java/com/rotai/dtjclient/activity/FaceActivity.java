@@ -18,11 +18,11 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,13 +30,15 @@ import com.rotai.dtjclient.R;
 import com.rotai.dtjclient.base.Application;
 import com.rotai.dtjclient.base.BaseActivity;
 import com.rotai.dtjclient.util.LogUtil;
-import com.rotai.dtjclient.view.customView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 public class FaceActivity extends BaseActivity {
@@ -60,12 +62,20 @@ public class FaceActivity extends BaseActivity {
     private int count = 0;
 
     /**
-     * 小图
+     * 小图的UI
      */
     private ImageView small1, small2, small3, small4, small5, small6, small7, small8;
+    private ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7, progressBar8;
+    private TextView top_test;  //测试top值
+    private RelativeLayout scan_rl;  //可上改下浮动的预览框
 
     /**
-     * data
+     * data：图片显示
+     */
+    private List<byte[]> imgdata = new ArrayList();
+
+    /**
+     * data：声音
      */
     private AssetFileDescriptor file;
     private MediaPlayer mediaPlayer;
@@ -141,9 +151,6 @@ public class FaceActivity extends BaseActivity {
             }
         }
     };
-    private TextView top_test;
-    private RelativeLayout scan_rl;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,13 +183,12 @@ public class FaceActivity extends BaseActivity {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 99, bos);
                     final byte[] data = bos.toByteArray();
-
                     Bundle msg = new Bundle();
                     msg.putString("op", "camera_frame");
                     msg.putByteArray("data", data);
                     bgQueue.post(new FaceActivity.ServiceSender(FaceActivity.this, msg));
                 } finally {
-                    bgQueue.postDelayed(this, 2000);
+                    bgQueue.postDelayed(this, 200);
                 }
             }
         });
@@ -200,47 +206,66 @@ public class FaceActivity extends BaseActivity {
         Application.mApplication.serviceMessageCallbacks.add(new Application.ServiceMessageCallback() {
             @Override
             public void message(final Bundle msg) {
-                Log.e(TAG, "message，data============"+LogUtil.bundleToStr(msg) );
+                Log.e(TAG, "message，data============" + LogUtil.bundleToStr(msg));
                 final byte[] data = msg.getByteArray("camera_frame");
                 final int top = msg.getInt("top");
-                Log.e(TAG, "count==" + count+",,data=="+data);
-                if (data == null){
+                Log.e(TAG, "count==" + count + ",,data==" + data);
+                if (data == null)
                     return;
-                }else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            top_test.setText("top值=" + top);
-                            if (top > 400) {
-                                RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
-                                scan_rl_Params.setMargins(0, top - 485 + 200, 0, 0);
-                                scan_rl.setLayoutParams(scan_rl_Params);
-                            } else {
-                                RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
-                                scan_rl_Params.setMargins(0, 120, 0, 0);
-                                scan_rl.setLayoutParams(scan_rl_Params);
-                            }
-                            if (count % 8 == 0) {
-                                small1.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 1) {
-                                small2.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 2) {
-                                small3.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 3) {
-                                small4.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 4) {
-                                small5.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 5) {
-                                small6.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 6) {
-                                small7.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            } else if (count % 8 == 7) {
-                                small8.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                            }
+
+                if (imgdata.size() < 1)
+                    imgdata.add(data);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        top_test.setText("top值=" + top);
+                        if (top>0) {
+                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                            scan_rl_Params.setMargins(0, 120, 0, 0);
+                            scan_rl.setLayoutParams(scan_rl_Params);
                         }
-                    });
-                    count++;
-                }
+//                        } else if (top > 300 && top < 400) {
+//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+//                            scan_rl_Params.setMargins(0, 140, 0, 0);
+//                            scan_rl.setLayoutParams(scan_rl_Params);
+//                        } else if (top > 400 && top < 500) {
+//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+//                            scan_rl_Params.setMargins(0, 160, 0, 0);
+//                            scan_rl.setLayoutParams(scan_rl_Params);
+//                        } else if (top > 500 && top < 600) {
+//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+//                            scan_rl_Params.setMargins(0, 180, 0, 0);
+//                            scan_rl.setLayoutParams(scan_rl_Params);
+//                        }
+                    }
+                });
+            }
+        });
+        final ImageView[] ivs = new ImageView[]{small1, small2, small3, small4, small5, small6, small7, small8};
+        final ProgressBar[] pbs = new ProgressBar[]{progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7, progressBar8};
+        queue.post(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (imgdata.size() == 0)
+                            return;
+                        final byte[] data = imgdata.remove(0);
+                        final int cnt = count;
+                        pbs[cnt % 8].setVisibility(View.VISIBLE);
+                        queue.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pbs[cnt % 8].setVisibility(View.GONE);
+                                ivs[cnt % 8].setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                            }
+                        },1000);
+                        count++;
+                    }
+                });
+                queue.postDelayed(this, 2000);
             }
         });
     }
@@ -256,13 +281,15 @@ public class FaceActivity extends BaseActivity {
         small7 = findViewById(R.id.small_img7);
         small8 = findViewById(R.id.small_img8);
         top_test = findViewById(R.id.height_test);
-        scan_rl=findViewById(R.id.scan_rl);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        scan_rl = findViewById(R.id.scan_rl);
+        progressBar1 = findViewById(R.id.progressBar1);
+        progressBar2 = findViewById(R.id.progressBar2);
+        progressBar3 = findViewById(R.id.progressBar3);
+        progressBar4 = findViewById(R.id.progressBar4);
+        progressBar5 = findViewById(R.id.progressBar5);
+        progressBar6 = findViewById(R.id.progressBar6);
+        progressBar7 = findViewById(R.id.progressBar7);
+        progressBar8 = findViewById(R.id.progressBar8);
     }
 
     private class ServiceReceiver extends Handler {
@@ -390,6 +417,7 @@ public class FaceActivity extends BaseActivity {
     }
 
     private static class ServiceSender implements Runnable {
+        static final AtomicInteger queueSize = new AtomicInteger(0);
         FaceActivity ctx;
         Bundle data;
 
@@ -400,19 +428,24 @@ public class FaceActivity extends BaseActivity {
 
         @Override
         public void run() {
-            if (ctx.serviceMessenger == null) {
-                ctx.queue.post(ctx.connectService);
-                ctx.queue.postDelayed(this, 1000);
+            if (queueSize.get() > 9)
                 return;
-            }
-
-            Message message = Message.obtain();
-            message.setData(data);
-            message.replyTo = ctx.serviceReceiver;
+            queueSize.incrementAndGet();
             try {
+                if (ctx.serviceMessenger == null) {
+                    ctx.queue.post(ctx.connectService);
+                    ctx.queue.postDelayed(this, 1000);
+                    return;
+                }
+
+                Message message = Message.obtain();
+                message.setData(data);
+                message.replyTo = ctx.serviceReceiver;
                 ctx.serviceMessenger.send(message);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
+            } finally {
+                queueSize.decrementAndGet();
             }
         }
     }

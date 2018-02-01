@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scanQrcode">本次测量结束\n请扫描此二维码查看报告</string>
     <string name="reporting">正在生成报告,请稍后...</string>
+    <string name="face_activity_title">面部肤质检测</string>
+    <string name="lookCamera">请将您的双眼直视上方的摄像头</string>
 </resources>
