@@ -1,11 +1,13 @@
 package com.rotai.dtjclient.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,12 +18,17 @@ import android.view.WindowManager;
 import com.rotai.dtjclient.util.LogUtil;
 
 import java.io.IOException;
+import java.util.Calendar;
+
+import static com.rotai.dtjclient.base.Application.MAX_BRIGHTNESS;
 
 public class BaseActivity extends AppCompatActivity {
 
     public static final String TAG = "dtjclient";
 
     private boolean isWorking = false;
+
+    Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +60,25 @@ public class BaseActivity extends AppCompatActivity {
 
         AppManager.getInstance().addActivity(this);
         checkActivity();
+
+        Application.mApplication.queue.post(new Runnable() {
+            @Override
+            public void run() {
+
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                Log.d(TAG, "当前小时数=="+hour +",当前的亮度值="+getSysScreenBrightness());
+
+                if((hour>20&&hour<24)||(hour>0&&hour<6)){
+                    setActScreenBrightness(BaseActivity.this,190);
+                }else {
+                    setActScreenBrightness(BaseActivity.this,0);
+                }
+
+                Application.mApplication.queue.postDelayed(this,5000);
+            }
+        });
+
+
     }
 
     private void checkActivity() {
@@ -132,5 +158,31 @@ public class BaseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return verName;
+    }
+
+    /**
+     * 设置屏幕亮度，这会反映到真实屏幕上
+     */
+    public static void setActScreenBrightness(final Activity activity,
+                                              final int brightness) {
+        final WindowManager.LayoutParams lp = activity.getWindow()
+                .getAttributes();
+        lp.screenBrightness = brightness / (float) MAX_BRIGHTNESS;
+        activity.getWindow().setAttributes(lp);
+    }
+
+    /**
+     * 获得当前系统的亮度值： 0~255
+     */
+    public int getSysScreenBrightness() {
+        int screenBrightness = MAX_BRIGHTNESS;
+        try {
+            screenBrightness = Settings.System.getInt(
+                    getApplicationContext().getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS);
+        } catch (Exception e) {
+            Log.e(TAG, "获得当前系统的亮度值失败：", e);
+        }
+        return screenBrightness;
     }
 }

@@ -9,6 +9,10 @@ import android.content.ServiceConnection;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -220,24 +224,24 @@ public class FaceActivity extends BaseActivity {
                     @Override
                     public void run() {
                         top_test.setText("top值=" + top);
-                        if (top>0) {
+                        if (top > 0) {
                             RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
                             scan_rl_Params.setMargins(0, 120, 0, 0);
                             scan_rl.setLayoutParams(scan_rl_Params);
                         }
-//                        } else if (top > 300 && top < 400) {
-//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
-//                            scan_rl_Params.setMargins(0, 140, 0, 0);
-//                            scan_rl.setLayoutParams(scan_rl_Params);
-//                        } else if (top > 400 && top < 500) {
-//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
-//                            scan_rl_Params.setMargins(0, 160, 0, 0);
-//                            scan_rl.setLayoutParams(scan_rl_Params);
-//                        } else if (top > 500 && top < 600) {
-//                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
-//                            scan_rl_Params.setMargins(0, 180, 0, 0);
-//                            scan_rl.setLayoutParams(scan_rl_Params);
-//                        }
+                        //                        } else if (top > 300 && top < 400) {
+                        //                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                        //                            scan_rl_Params.setMargins(0, 140, 0, 0);
+                        //                            scan_rl.setLayoutParams(scan_rl_Params);
+                        //                        } else if (top > 400 && top < 500) {
+                        //                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                        //                            scan_rl_Params.setMargins(0, 160, 0, 0);
+                        //                            scan_rl.setLayoutParams(scan_rl_Params);
+                        //                        } else if (top > 500 && top < 600) {
+                        //                            RelativeLayout.LayoutParams scan_rl_Params = (RelativeLayout.LayoutParams) scan_rl.getLayoutParams();
+                        //                            scan_rl_Params.setMargins(0, 180, 0, 0);
+                        //                            scan_rl.setLayoutParams(scan_rl_Params);
+                        //                        }
                     }
                 });
             }
@@ -259,15 +263,49 @@ public class FaceActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 pbs[cnt % 8].setVisibility(View.GONE);
-                                ivs[cnt % 8].setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                Bitmap mBitmap = changeImageFilter(bitmap);
+                                ivs[cnt % 8].setImageBitmap(mBitmap);
                             }
-                        },1000);
+                        }, 2000);
                         count++;
                     }
                 });
-                queue.postDelayed(this, 2000);
+                queue.postDelayed(this, 3000);
             }
         });
+    }
+
+    /**
+     * 增加滤镜
+     */
+    public static Bitmap changeImageFilter(Bitmap bitmap) {
+
+        int width, height;
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
+
+
+        Bitmap mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(mBitmap);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true); // 设置抗锯齿
+
+        float[] array = {
+                1.438F, -0.122F, -0.016F, 0, -0.03F,
+                -0.062F, 1.378F, -0.016F, 0, 0.05F,
+                -0.062F, -0.122F, 1.483F, 0, -0.02F,
+                0, 0, 0, 1, 0
+        };
+
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.set(array);
+
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(filter);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+
+        return mBitmap;
     }
 
     private void initView() {

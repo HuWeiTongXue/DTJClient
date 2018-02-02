@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +30,14 @@ public class Application extends android.app.Application {
     public static Application mApplication = null;
 
     public static int stateCount = 0;
+
+    /**
+     * 亮度值
+     */
+    /** 可调节的最小亮度值 */
+    public static final int MIN_BRIGHTNESS = 30;
+    /** 可调节的最大亮度值 */
+    public static final int MAX_BRIGHTNESS = 255;
 
     /**
      * 人脸检测相关
@@ -178,11 +187,15 @@ public class Application extends android.app.Application {
         }
     }
 
-    //隐藏底部
-    public static void sidebuttom(Window window) {
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        window.setAttributes(params);
+    public int getBrightnessMode() {
+        int brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+        try {
+            brightnessMode = Settings.System.getInt(
+                    getApplicationContext().getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS_MODE);
+        } catch (Exception e) {
+            Log.e(TAG, "获得当前屏幕的亮度模式失败：", e);
+        }
+        return brightnessMode;
     }
-
 }
